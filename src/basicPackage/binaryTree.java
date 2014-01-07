@@ -21,14 +21,6 @@ public class binaryTree {
 		return root;
 	}
 
-	public treeNode getLeftSibling(treeNode curNode) {
-		if (curNode.parent != null && curNode.parent.rightLeaf == curNode) {
-			return curNode.parent.leftLeaf;
-		}
-
-		return null;
-	}
-
 	// get the left most leaf on the lowest level
 	public treeNode getLeftMostNode(treeNode curRoot) {
 		if (curRoot.leftLeaf == null)
@@ -63,7 +55,7 @@ public class binaryTree {
 		// scenario 1： current node is not the right most on its level, then
 		// parent's next right sibling's left child is the next spot to insert
 		if (!isRightMost(this.lastInsertNode)) {
-			return getNextRightSibling(parent) ;
+			return getNextRightSibling(parent);
 		} else {// scenario 2: parent is the right most on its level, then next
 				// insert spot should be the left child of the left most node on
 				// current node level
@@ -86,19 +78,6 @@ public class binaryTree {
 		return false;
 	}
 
-	public boolean isLeftMost(treeNode curNode) {
-		treeNode parent = curNode.parent;
-
-		if (parent == null) // root
-			return true;
-
-		if (parent.leftLeaf == curNode) // is parent's right leaf, see if
-										// parent's is right most
-			return isLeftMost(parent);
-
-		return false;
-	}
-
 	public binaryTree(int[] intArray) {
 		for (int i = 0; i < intArray.length; i++) {
 			// add into tree
@@ -116,7 +95,7 @@ public class binaryTree {
 	// returns true if successful, return false otherwise
 	public void addNodeBalanced(int newLeafValue) {
 		treeNode newNode = new treeNode(newLeafValue);
-	
+
 		// root node is last insert, add to left child
 		if (this.lastInsertNode == this.root) {
 			this.lastInsertNode.leftLeaf = newNode;
@@ -141,26 +120,6 @@ public class binaryTree {
 		newNode.parent = nextInsertParent;
 		this.lastInsertNode = newNode;
 		return;
-//		if (lastParent.rightLeaf == this.lastInsertNode) {
-//			// if lastParent is the left most on its level, find right sibling
-//			// and add underneath
-//			treeNode parentRightSibling = this.getNextRightSibling(lastParent);
-//			if (parentRightSibling != null) {
-//				parentRightSibling.leftLeaf = newNode;
-//				newNode.parent = parentRightSibling;
-//				this.lastInsertNode = newNode;
-//				return;
-//			} else {// lastParent is the right most
-//				treeNode leftMostSibling = this.getLeftMostNode(this.root);
-//				// if(leftMostSibling != null) {
-//				leftMostSibling.leftLeaf = newNode;
-//				newNode.parent = leftMostSibling;
-//				this.lastInsertNode = newNode;
-//				return;
-//				// }
-//			}
-//		}
-
 	}
 
 	/*
@@ -201,6 +160,27 @@ public class binaryTree {
 						+ " not recognized!\n");
 				break;
 			}
+		}
+	}
+
+	// given a number, print all paths on which the node's value sums to the
+	// number, print from root down
+	public void printAllPath(int num, treeNode curRoot) {
+		if (curRoot.value > num) {
+			if (curRoot == this.root) {
+				System.out.println("No path exist!\n");
+				return;
+			} else {
+				// remove all on this line.
+			}
+		}
+
+		System.out.println(curRoot.value);
+		// dynamic programming
+		int restNum = num - curRoot.value;
+		if (restNum > 0) {
+			printAllPath(restNum, root.leftLeaf);
+			printAllPath(restNum, root.rightLeaf);
 		}
 	}
 }
