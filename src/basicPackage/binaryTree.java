@@ -17,6 +17,20 @@ public class binaryTree {
 		nodeCount = 1;
 	}
 
+	public binaryTree(int[] intArray) {
+		for (int i = 0; i < intArray.length; i++) {
+			// add into tree
+			if (i == 0) {// first node
+				root = new treeNode(intArray[i]);
+				lastInsertNode = root;
+				nodeCount = 1;
+			} else {
+				addNodeBalanced(intArray[i]);
+			}
+			nodeCount++;
+		}
+	}
+
 	public treeNode getRoot() {
 		return root;
 	}
@@ -76,20 +90,6 @@ public class binaryTree {
 			return isRightMost(parent);
 
 		return false;
-	}
-
-	public binaryTree(int[] intArray) {
-		for (int i = 0; i < intArray.length; i++) {
-			// add into tree
-			if (i == 0) {// first node
-				root = new treeNode(intArray[i]);
-				lastInsertNode = root;
-				nodeCount = 1;
-			} else {
-				addNodeBalanced(intArray[i]);
-			}
-			nodeCount++;
-		}
 	}
 
 	// returns true if successful, return false otherwise
@@ -165,22 +165,65 @@ public class binaryTree {
 
 	// given a number, print all paths on which the node's value sums to the
 	// number, print from root down
-	public void printAllPath(int num, treeNode curRoot) {
-		if (curRoot.value > num) {
-			if (curRoot == this.root) {
-				System.out.println("No path exist!\n");
-				return;
+	public void addToPath(int sum, treeNode node, int[] path, int nextPos) {
+		if (shouldAdd(sum, node)) {
+			// add node to curPath;
+			path[nextPos] = node.value;
+
+			int newSum = sum - node.value;
+			if (newSum == 0) { // finish , print
+				System.out.print("Path:");
+				for (int i = 0; i < path.length; i++) {
+					while (path[i] > 0) {
+						System.out.print(path[i]);
+						System.out.print(' ');
+					}
+					System.out.println();
+				}
 			} else {
-				// remove all on this line.
+				addToPath(sum - node.value, node.leftLeaf, path, nextPos + 1);
+				addToPath(sum - node.value, node.rightLeaf, path, nextPos + 1);
 			}
 		}
 
-		System.out.println(curRoot.value);
-		// dynamic programming
-		int restNum = num - curRoot.value;
-		if (restNum > 0) {
-			printAllPath(restNum, root.leftLeaf);
-			printAllPath(restNum, root.rightLeaf);
+		// if (node.value == sum) {
+		// // add node to curPath, print; finish
+		// path[nextPos] = node.value;
+		// return true;
+		// } else if (node.value < sum) {
+		// int newSum = sum - node.value;
+		// // add node to curPath;
+		// path[nextPos] = node.value;
+		// int newPos = nextPos + 1;
+		// if (!addToPath(newSum, node.leftLeaf, path, newPos)
+		// && !addToPath(newSum, node.rightLeaf, path, newPos)) {
+		// // remove current node from curPath;
+		// path[nextPos] = 0;
+		// return false;
+		// }
+		// return true;
+		// } else { // node.value > sum. this path so far is not fulfilling
+		// // requirement, abandon it
+		// // clear curPath
+		// return false;
+		// }
+	}
+
+	public boolean shouldAdd(int sum, treeNode node) {
+		if (node == null)
+			return false;
+
+		if (node.value == sum) {
+			return true;
 		}
+
+		if (node.value < sum) {
+			if (shouldAdd(sum - node.value, node.leftLeaf)
+					|| shouldAdd(sum - node.value, node.rightLeaf)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

@@ -25,10 +25,12 @@ public class testMain {
 		newObj.printStack(newObj.sortStack(newObj.forSort));*/
 		
 		//for binaryTree
-		int[] intArray = new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32};
+		int[] intArray = new int[]{1,3,2,4,5,6,7,1,2,1};
+		int[] path = new int[intArray.length];
 		binaryTree newTree = new binaryTree(intArray);
 		System.out.println("======In-order=======");
 		newTree.printTree(newTree.getRoot(),1);
+		newTree.addToPath(10,newTree.getRoot(), path,0);
 //		System.out.println("\n======Pre-order=======");
 //		newTree.printTree(newTree.getRoot(),2);
 //		System.out.println("\n======Post-order=======");
