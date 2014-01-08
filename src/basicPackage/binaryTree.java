@@ -66,7 +66,7 @@ public class binaryTree {
 		treeNode parent = this.lastInsertNode.parent;
 
 		// last insert is right child of parent
-		// scenario 1： current node is not the right most on its level, then
+		// scenario 1锛�current node is not the right most on its level, then
 		// parent's next right sibling's left child is the next spot to insert
 		if (!isRightMost(this.lastInsertNode)) {
 			return getNextRightSibling(parent);
@@ -163,67 +163,95 @@ public class binaryTree {
 		}
 	}
 
-	// given a number, print all paths on which the node's value sums to the
-	// number, print from root down
-	public void addToPath(int sum, treeNode node, int[] path, int nextPos) {
-		if (shouldAdd(sum, node)) {
-			// add node to curPath;
-			path[nextPos] = node.value;
+	/*
+	 * No. 04 - Paths with Specified Sum in Binary Tree All nodes along children
+	 * pointers from root to leaf nodes form a path in a binary tree. Given a
+	 * binary tree and a number, please print out all of paths where the sum of
+	 * all nodes value is same as the given number.
+	 */
+	public static int runCount = 0;
 
-			int newSum = sum - node.value;
-			if (newSum == 0) { // finish , print
-				System.out.print("Path:");
-				for (int i = 0; i < path.length; i++) {
-					while (path[i] > 0) {
-						System.out.print(path[i]);
-						System.out.print(' ');
-					}
-					System.out.println();
-				}
-			} else {
-				addToPath(sum - node.value, node.leftLeaf, path, nextPos + 1);
-				addToPath(sum - node.value, node.rightLeaf, path, nextPos + 1);
-			}
+	public void addToPath(int sum, treeNode node, int[] path, int index) {
+		// clear the path from index on;
+		for (int i = index; i < path.length; i++) {
+			if (path[i] > 0)
+				path[i] = 0;
 		}
+		runCount++;
 
-		// if (node.value == sum) {
-		// // add node to curPath, print; finish
-		// path[nextPos] = node.value;
-		// return true;
-		// } else if (node.value < sum) {
-		// int newSum = sum - node.value;
-		// // add node to curPath;
-		// path[nextPos] = node.value;
-		// int newPos = nextPos + 1;
-		// if (!addToPath(newSum, node.leftLeaf, path, newPos)
-		// && !addToPath(newSum, node.rightLeaf, path, newPos)) {
-		// // remove current node from curPath;
-		// path[nextPos] = 0;
-		// return false;
-		// }
-		// return true;
-		// } else { // node.value > sum. this path so far is not fulfilling
-		// // requirement, abandon it
-		// // clear curPath
-		// return false;
-		// }
-	}
-
-	public boolean shouldAdd(int sum, treeNode node) {
 		if (node == null)
-			return false;
+			return;
 
+		// last node in the path, add to path and print out path
 		if (node.value == sum) {
-			return true;
+			path[index] = node.value;
+			System.out.println();
+			for (int i = 0; i < path.length; i++) {
+				if (path[i] > 0) {
+					System.out.print(path[i]);
+					System.out.print(' ');
+				}
+			}
+			System.out.println();
 		}
+
+		if (node.value > sum)
+			return;
 
 		if (node.value < sum) {
-			if (shouldAdd(sum - node.value, node.leftLeaf)
-					|| shouldAdd(sum - node.value, node.rightLeaf)) {
-				return true;
+			// add current node if it has children
+			if (node.leftLeaf != null || node.rightLeaf != null) {
+				path[index] = node.value;
+				addToPath(sum - node.value, node.leftLeaf, path, index + 1);
+				addToPath(sum - node.value, node.rightLeaf, path, index + 1);
 			}
 		}
+		return;
+	}
 
+	/*
+	 * No. 31 - Binary Search Tree Verification How to verify whether a binary
+	 * tree is a binary search tree?
+	 */
+	// method: print tree node in in-order into an array, if the array is
+	// sorted, then yes. Otherwise no.
+	public boolean isBST() {
+		int[] array = new int[this.nodeCount];
+		addToArray(this.root,array,0);
+	 
+		if(arrayInOrder(array,1)) {
+				return true;
+		}
+		
 		return false;
+	}
+
+	// flag = 0, descending order; flag = 1, ascending order
+	public boolean arrayInOrder(int[] array, int flag) {
+		for (int i = 0; i < array.length - 2; i++) { // i is from 0 to 2nd last
+			if ((flag == 0 && array[i] < array[i + 1])
+					|| (flag == 1 && array[i] > array[i + 1])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// add node to array in in-order order
+	public int addToArray(treeNode node, int[] array, int index) {
+		int newIndex = index;
+
+		if (node == null)
+			return index;
+
+		if (node.leftLeaf != null) {
+			newIndex = addToArray(node.leftLeaf, array, index);
+		}
+		array[newIndex] = node.value;
+		newIndex++;
+		if (node.rightLeaf != null) {
+			newIndex = addToArray(node.rightLeaf, array, newIndex);
+		}
+		return newIndex;
 	}
 }
