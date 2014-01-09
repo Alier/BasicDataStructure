@@ -26,8 +26,8 @@ public class binaryTree {
 				nodeCount = 1;
 			} else {
 				addNodeBalanced(intArray[i]);
+				nodeCount++;
 			}
-			nodeCount++;
 		}
 	}
 
@@ -217,12 +217,12 @@ public class binaryTree {
 	// sorted, then yes. Otherwise no.
 	public boolean isBST() {
 		int[] array = new int[this.nodeCount];
-		addToArray(this.root,array,0);
-	 
-		if(arrayInOrder(array,1)) {
-				return true;
+		addToArray(this.root, array, 0);
+
+		if (arrayInOrder(array, 1)) {
+			return true;
 		}
-		
+
 		return false;
 	}
 

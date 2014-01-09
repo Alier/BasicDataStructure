@@ -25,12 +25,16 @@ public class testMain {
 		newObj.printStack(newObj.sortStack(newObj.forSort));*/
 		
 		//for binaryTree
-		int[] intArray = new int[]{7,4,13,2,6,10,14,1};
+		int[] intArray = new int[]{7,4,13,2,6,10,14,1,3,5,11,12,8,9};
+		int sum = 18;
 		//int[] path = new int[intArray.length];
-		binaryTree newTree = new binaryTree(intArray);
-		System.out.println("======In-order=======");
+		//binaryTree newTree = new binaryTree(intArray);
+		binarySearchTree newTree = new binarySearchTree(intArray);
+		System.out.println("======In-order======= node count:"+newTree.nodeCount);
 		newTree.printTree(newTree.getRoot(),1);
 		System.out.println("\nisBST ? "+newTree.isBST());
+		System.out.println("has pair sum at "+sum+" ? "+newTree.nodesWithSum(sum, newTree.root));
+		System.out.println("Running binarySearch : "+binarySearchTree.runCount);
 		//newTree.addToPath(7,newTree.getRoot(), path,0);
 		//System.out.println("running times:"+binaryTree.runCount);
 //		System.out.println("\n======Pre-order=======");
