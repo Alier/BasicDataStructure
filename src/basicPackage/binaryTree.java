@@ -254,4 +254,79 @@ public class binaryTree {
 		}
 		return newIndex;
 	}
+
+	/*
+	 * Given a binary tree, find its minimum depth. The minimum depth is the
+	 * number of nodes along the shortest path from the root node down to the
+	 * nearest leaf node.
+	 */
+	public int minDepth(treeNode curRoot) {
+		if (curRoot == null)
+			return 0;
+
+		if (curRoot.leftLeaf == null && curRoot.rightLeaf == null)
+			return 1;
+
+		if (curRoot.leftLeaf != null && curRoot.rightLeaf != null) {
+			int minLeft = minDepth(curRoot.leftLeaf);
+			int minRight = minDepth(curRoot.rightLeaf);
+
+			return minLeft <= minRight ? (minLeft + 1) : (minRight + 1);
+		}
+
+		// rightLeaf only
+		if (curRoot.leftLeaf == null) {
+			return minDepth(curRoot.rightLeaf) + 1;
+		} else {// leftLeaf only
+			return minDepth(curRoot.leftLeaf) + 1;
+		}
+	}
+
+	/*
+	 * Given a binary tree, find the maximum path sum. 
+	 * The path may start and end at any node in the tree.--- DON'T need to be in order from root down
+	 */
+	
+	public int curMaxPath = 0;
+	
+	/*!!!!!INCOMPLETE !!!!!*/
+	public int maxPathSum(treeNode curRoot){
+		int newMax = 0;
+		
+		treeNode curNode = curRoot;
+		while(curNode.leftLeaf != null) {
+			curNode = curNode.leftLeaf;
+			newMax = maxPathAsRoot(curNode);
+			if(newMax > curMaxPath) 
+				curMaxPath = newMax;
+		}
+		
+		while(curNode.rightLeaf != null) {
+			curNode = curNode.rightLeaf;
+			newMax = maxPathAsRoot(curNode);
+			if(newMax > curMaxPath) 
+				curMaxPath = newMax;
+		}
+		
+		return curMaxPath;
+	}
+	
+	//return the max sum of curRoot as the last point in the path, only choosing left or right child tree in the path
+	public int maxPathNotRoot(treeNode curRoot) { 
+		if(curRoot == null)
+			return 0;
+		
+		if(curRoot.leftLeaf == null && curRoot.rightLeaf == null)
+			return curRoot.value;
+		
+		int leftMax = maxPathNotRoot(curRoot.leftLeaf);
+		int rightMax = maxPathNotRoot(curRoot.rightLeaf);
+		
+		return (leftMax >= rightMax ? (leftMax+curRoot.value): (rightMax + curRoot.value)) ;
+	}
+	
+	//return the max sum of curRoot as root in the final path
+	public int maxPathAsRoot(treeNode curRoot){
+		return maxPathNotRoot(curRoot.leftLeaf) + maxPathNotRoot(curRoot.rightLeaf)+curRoot.value;
+	}	
 }

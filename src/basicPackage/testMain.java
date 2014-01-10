@@ -25,7 +25,7 @@ public class testMain {
 		newObj.printStack(newObj.sortStack(newObj.forSort));*/
 		
 		//for binaryTree
-		int[] intArray = new int[]{7,4,13,2,6,10,14,1,3,5,11,12,8,9};
+		int[] intArray = new int[]{7,4,13,2,6,10,14,1,3,5,11,12,8,9,15};
 		int sum = 18;
 		//int[] path = new int[intArray.length];
 		//binaryTree newTree = new binaryTree(intArray);
@@ -35,6 +35,8 @@ public class testMain {
 		System.out.println("\nisBST ? "+newTree.isBST());
 		System.out.println("has pair sum at "+sum+" ? "+newTree.nodesWithSum(sum, newTree.root));
 		System.out.println("Running binarySearch : "+binarySearchTree.runCount);
+		System.out.println("minDepth: "+newTree.minDepth(newTree.getRoot()));
+		System.out.println("maxPathSum: "+newTree.maxPathSum(newTree.getRoot()));
 		//newTree.addToPath(7,newTree.getRoot(), path,0);
 		//System.out.println("running times:"+binaryTree.runCount);
 //		System.out.println("\n======Pre-order=======");
