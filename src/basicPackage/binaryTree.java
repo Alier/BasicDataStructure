@@ -5,10 +5,12 @@ public class binaryTree {
 	public int nodeCount;
 	public treeNode lastInsertNode; // pointing to last node inserted into
 									// balanced tree
-
+	public treeNode highestPointForMaxPath ; // pointing at the node from where the max path formed without going up
+	
 	public binaryTree() {
 		root = null;
 		nodeCount = 0;
+		highestPointForMaxPath = null;
 	}
 
 	public binaryTree(int rootValue) {
@@ -287,28 +289,51 @@ public class binaryTree {
 	 * The path may start and end at any node in the tree.--- DON'T need to be in order from root down
 	 */
 	
-	public int curMaxPath = 0;
-	
-	/*!!!!!INCOMPLETE !!!!!*/
 	public int maxPathSum(treeNode curRoot){
-		int newMax = 0;
+		int maxPathNotRoot ;
+		int maxPathAsRoot;
+		int curMax;
+		int maxPathFinal = 0;
+		treeNode p = curRoot;
 		
-		treeNode curNode = curRoot;
-		while(curNode.leftLeaf != null) {
-			curNode = curNode.leftLeaf;
-			newMax = maxPathAsRoot(curNode);
-			if(newMax > curMaxPath) 
-				curMaxPath = newMax;
+		//max for left tree
+		do {
+			p = p.leftLeaf;
+			maxPathNotRoot = maxPathNotRoot(p);
+			maxPathAsRoot = maxPathAsRoot(p);
+			
+			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot:maxPathAsRoot;
+			if(curMax > maxPathFinal) {
+				maxPathFinal = curMax;
+				this.highestPointForMaxPath = p;
+			}
+		} while(p != null);
+		
+		p = curRoot;
+		//max for right tree
+		do {
+			p = p.rightLeaf;
+			maxPathNotRoot = maxPathNotRoot(p);
+			maxPathAsRoot = maxPathAsRoot(p);
+			
+			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot:maxPathAsRoot;
+			if(curMax > maxPathFinal) {
+				maxPathFinal = curMax;
+				this.highestPointForMaxPath = p;
+			}
+		} while(p != null);
+	
+		//max for root
+		maxPathNotRoot = maxPathNotRoot(curRoot);
+		maxPathAsRoot = maxPathAsRoot(curRoot);
+		
+		curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot:maxPathAsRoot;
+		if(curMax > maxPathFinal) {
+			maxPathFinal = curMax;
+			this.highestPointForMaxPath = curRoot;
 		}
 		
-		while(curNode.rightLeaf != null) {
-			curNode = curNode.rightLeaf;
-			newMax = maxPathAsRoot(curNode);
-			if(newMax > curMaxPath) 
-				curMaxPath = newMax;
-		}
-		
-		return curMaxPath;
+		return maxPathFinal;
 	}
 	
 	//return the max sum of curRoot as the last point in the path, only choosing left or right child tree in the path
@@ -325,8 +350,11 @@ public class binaryTree {
 		return (leftMax >= rightMax ? (leftMax+curRoot.value): (rightMax + curRoot.value)) ;
 	}
 	
-	//return the max sum of curRoot as root in the final path
+	//return the max sum of curRoot as root in the final path (meaning curRoot is in the path, parent is not, taking both left and right in the path)
 	public int maxPathAsRoot(treeNode curRoot){
+		if(curRoot == null) 
+			return 0;
+		
 		return maxPathNotRoot(curRoot.leftLeaf) + maxPathNotRoot(curRoot.rightLeaf)+curRoot.value;
 	}	
 }

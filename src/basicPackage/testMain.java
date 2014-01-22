@@ -25,18 +25,19 @@ public class testMain {
 		newObj.printStack(newObj.sortStack(newObj.forSort));*/
 		
 		//for binaryTree
-		int[] intArray = new int[]{7,4,13,2,6,10,14,1,3,5,11,12,8,9,15};
-		int sum = 18;
-		//int[] path = new int[intArray.length];
-		//binaryTree newTree = new binaryTree(intArray);
-		binarySearchTree newTree = new binarySearchTree(intArray);
+		//int[] intArray = new int[]{7,4,13,2,6,10,14,1,3,5,11,12,8,9,15};
+		int[] intArray2 = new int[]{1,2,3,6,10,8,5,4,7,9};
+		//int sum = 18;
+		//int[] path = new int[intArray2.length];
+		binaryTree newTree = new binaryTree(intArray2);
+		//binarySearchTree newTree = new binarySearchTree(intArray);
 		System.out.println("======In-order======= node count:"+newTree.nodeCount);
 		newTree.printTree(newTree.getRoot(),1);
 		System.out.println("\nisBST ? "+newTree.isBST());
-		System.out.println("has pair sum at "+sum+" ? "+newTree.nodesWithSum(sum, newTree.root));
-		System.out.println("Running binarySearch : "+binarySearchTree.runCount);
+		//System.out.println("has pair sum at "+sum+" ? "+newTree.nodesWithSum(sum, newTree.root));
+		//System.out.println("Running binarySearch : "+binarySearchTree.runCount);
 		System.out.println("minDepth: "+newTree.minDepth(newTree.getRoot()));
-		System.out.println("maxPathSum: "+newTree.maxPathSum(newTree.getRoot()));
+		System.out.println("maxPathSum: "+newTree.maxPathSum(newTree.getRoot())+" Root is "+newTree.highestPointForMaxPath.value);
 		//newTree.addToPath(7,newTree.getRoot(), path,0);
 		//System.out.println("running times:"+binaryTree.runCount);
 //		System.out.println("\n======Pre-order=======");
