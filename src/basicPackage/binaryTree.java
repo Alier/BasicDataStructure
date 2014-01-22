@@ -1,11 +1,20 @@
 package basicPackage;
 
+import java.util.HashMap;
+
 public class binaryTree {
 	public treeNode root;
 	public int nodeCount;
 	public treeNode lastInsertNode; // pointing to last node inserted into
 									// balanced tree
-	public treeNode highestPointForMaxPath ; // pointing at the node from where the max path formed without going up
+	public treeNode highestPointForMaxPath; // pointing at the node from where
+											// the max path formed without going
+											// up
+
+	public int running_time_NotRoot = 0;
+	public int running_time_asRoot = 0; 
+	public int running_time_NotRoot2 = 0;
+	public int running_time_asRoot2 = 0; 
 	
 	public binaryTree() {
 		root = null;
@@ -285,76 +294,193 @@ public class binaryTree {
 	}
 
 	/*
-	 * Given a binary tree, find the maximum path sum. 
-	 * The path may start and end at any node in the tree.--- DON'T need to be in order from root down
+	 * Given a binary tree, find the maximum path sum. The path may start and
+	 * end at any node in the tree.--- DON'T need to be in order from root down
 	 */
-	
-	public int maxPathSum(treeNode curRoot){
-		int maxPathNotRoot ;
+	// Method 1: too time-consuming, as the tree has to be traversed couple
+	// times.
+	public int maxPathSum(treeNode curRoot) {
+		int maxPathNotRoot;
 		int maxPathAsRoot;
 		int curMax;
 		int maxPathFinal = 0;
 		treeNode p = curRoot;
-		
-		//max for left tree
+
+		// max for left tree
 		do {
 			p = p.leftLeaf;
 			maxPathNotRoot = maxPathNotRoot(p);
 			maxPathAsRoot = maxPathAsRoot(p);
-			
-			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot:maxPathAsRoot;
-			if(curMax > maxPathFinal) {
+
+			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
+					: maxPathAsRoot;
+			if (curMax > maxPathFinal) {
 				maxPathFinal = curMax;
 				this.highestPointForMaxPath = p;
 			}
-		} while(p != null);
-		
+		} while (p != null);
+
 		p = curRoot;
-		//max for right tree
+		// max for right tree
 		do {
 			p = p.rightLeaf;
 			maxPathNotRoot = maxPathNotRoot(p);
 			maxPathAsRoot = maxPathAsRoot(p);
-			
-			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot:maxPathAsRoot;
-			if(curMax > maxPathFinal) {
+
+			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
+					: maxPathAsRoot;
+			if (curMax > maxPathFinal) {
 				maxPathFinal = curMax;
 				this.highestPointForMaxPath = p;
 			}
-		} while(p != null);
-	
-		//max for root
+		} while (p != null);
+
+		// max for root
 		maxPathNotRoot = maxPathNotRoot(curRoot);
 		maxPathAsRoot = maxPathAsRoot(curRoot);
-		
-		curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot:maxPathAsRoot;
-		if(curMax > maxPathFinal) {
+
+		curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
+				: maxPathAsRoot;
+		if (curMax > maxPathFinal) {
 			maxPathFinal = curMax;
 			this.highestPointForMaxPath = curRoot;
 		}
-		
+
+		System.out.println("Running time for method 1:" +this.running_time_asRoot +"/"+this.running_time_NotRoot);
 		return maxPathFinal;
 	}
-	
-	//return the max sum of curRoot as the last point in the path, only choosing left or right child tree in the path
-	public int maxPathNotRoot(treeNode curRoot) { 
-		if(curRoot == null)
+
+	// return the max sum of curRoot as the last point in the path, only
+	// choosing left or right child tree in the path
+	public int maxPathNotRoot(treeNode curRoot) {
+		this.running_time_NotRoot++;
+		
+		if (curRoot == null)
 			return 0;
-		
-		if(curRoot.leftLeaf == null && curRoot.rightLeaf == null)
+
+		if (curRoot.leftLeaf == null && curRoot.rightLeaf == null)
 			return curRoot.value;
-		
+
 		int leftMax = maxPathNotRoot(curRoot.leftLeaf);
 		int rightMax = maxPathNotRoot(curRoot.rightLeaf);
-		
-		return (leftMax >= rightMax ? (leftMax+curRoot.value): (rightMax + curRoot.value)) ;
+
+		return (leftMax >= rightMax ? (leftMax + curRoot.value)
+				: (rightMax + curRoot.value));
 	}
-	
-	//return the max sum of curRoot as root in the final path (meaning curRoot is in the path, parent is not, taking both left and right in the path)
-	public int maxPathAsRoot(treeNode curRoot){
-		if(curRoot == null) 
+
+	// return the max sum of curRoot as root in the final path (meaning curRoot
+	// is in the path, parent is not, taking both left and right in the path)
+	public int maxPathAsRoot(treeNode curRoot) {
+		this.running_time_asRoot ++;
+		if (curRoot == null)
+			return 0;
+
+		return maxPathNotRoot(curRoot.leftLeaf)
+				+ maxPathNotRoot(curRoot.rightLeaf) + curRoot.value;
+	}
+
+	// Method2: traverse the tree once from down to up, calculate both max for
+	// each node, get the highest after all traverse done;
+	public int maxPathSum2(treeNode curRoot) {
+		HashMap<treeNode,Integer> node_notRootMax = new HashMap<treeNode,Integer>();
+		HashMap<treeNode,Integer> node_asRootMax = new HashMap<treeNode,Integer>();
+		
+		int maxPathNotRoot;
+		int maxPathAsRoot;
+		int curMax;
+		int maxPathFinal = -10000;
+		treeNode p = curRoot;
+
+		if(p == null)
 			return 0;
 		
-		return maxPathNotRoot(curRoot.leftLeaf) + maxPathNotRoot(curRoot.rightLeaf)+curRoot.value;
-	}	
+		// max for left tree
+		while((p = p.leftLeaf) != null) {
+			maxPathNotRoot = maxPathNotRoot2(p,node_notRootMax);
+			maxPathAsRoot = maxPathAsRoot2(p,node_notRootMax,node_asRootMax);
+
+			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
+					: maxPathAsRoot;
+			if (curMax > maxPathFinal) {
+				maxPathFinal = curMax;
+				this.highestPointForMaxPath = p;
+			}
+		} 
+
+		p = curRoot;
+		// max for right tree
+		while((p = p.rightLeaf) != null) {
+			maxPathNotRoot = maxPathNotRoot2(p,node_notRootMax);
+			maxPathAsRoot = maxPathAsRoot2(p,node_notRootMax,node_asRootMax);
+
+			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
+					: maxPathAsRoot;
+			if (curMax > maxPathFinal) {
+				maxPathFinal = curMax;
+				this.highestPointForMaxPath = p;
+			}
+		} 
+
+		// max for root
+		maxPathNotRoot = maxPathNotRoot2(curRoot,node_notRootMax);
+		maxPathAsRoot = maxPathAsRoot2(curRoot,node_notRootMax,node_asRootMax);
+
+		curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
+				: maxPathAsRoot;
+		if (curMax > maxPathFinal) {
+			maxPathFinal = curMax;
+			this.highestPointForMaxPath = curRoot;
+		}
+
+		System.out.println("Running time for method 2:" +this.running_time_asRoot2 +"/"+this.running_time_NotRoot2);
+		return maxPathFinal;
+	}
+
+	// return the max sum of curRoot as the last point in the path, only
+	// choosing left or right child tree in the path
+	public int maxPathNotRoot2(treeNode curRoot, HashMap<treeNode, Integer> node_notRootMax) {
+		this.running_time_NotRoot2 ++;
+		if (node_notRootMax.containsKey(curRoot)) 
+			return node_notRootMax.get(curRoot);
+
+		if (curRoot.leftLeaf == null && curRoot.rightLeaf == null) {
+			node_notRootMax.put(curRoot, curRoot.value);
+			return curRoot.value;
+		}
+
+		int leftMax = maxPathNotRoot(curRoot.leftLeaf);
+		int rightMax = maxPathNotRoot(curRoot.rightLeaf);
+
+		int curMax = (leftMax >= rightMax ? (leftMax + curRoot.value)
+				: (rightMax + curRoot.value));
+		node_notRootMax.put(curRoot, curMax);
+		return curMax;
+	}
+
+	// return the max sum of curRoot as root in the final path (meaning curRoot
+	// is in the path, parent is not, taking both left and right in the path)
+	public int maxPathAsRoot2(treeNode curRoot, HashMap<treeNode, Integer> node_notRootMax, HashMap<treeNode, Integer> node_asRootMax) {
+		this.running_time_asRoot2 ++;
+		int curMax = -10000;
+		
+		if (node_asRootMax.containsKey(curRoot))
+			return node_asRootMax.get(curRoot);
+
+		if (curRoot.leftLeaf == null && curRoot.rightLeaf == null) {
+			curMax = curRoot.value;
+		}	
+		else if (curRoot.leftLeaf == null && curRoot.rightLeaf != null) {
+			curMax =  maxPathNotRoot2(curRoot.rightLeaf,node_notRootMax) +curRoot.value;
+		} 
+		else if (curRoot.leftLeaf != null && curRoot.rightLeaf == null) {
+			curMax =  maxPathNotRoot2(curRoot.leftLeaf,node_notRootMax) +curRoot.value;
+		} 
+		else {
+			curMax = maxPathNotRoot2(curRoot.leftLeaf,node_notRootMax)
+				+ maxPathNotRoot2(curRoot.rightLeaf,node_notRootMax) + curRoot.value;
+		}
+		
+		node_asRootMax.put(curRoot, curMax);	
+		return curMax;
+	}
 }
