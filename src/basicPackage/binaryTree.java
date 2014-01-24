@@ -1,6 +1,8 @@
 package basicPackage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class binaryTree {
 	public treeNode root;
@@ -482,5 +484,51 @@ public class binaryTree {
 		
 		node_asRootMax.put(curRoot, curMax);	
 		return curMax;
+	}
+	
+	//reversal of binary tree in pre-order, post-order, and in-order, using no-recurrsive way
+	public ArrayList<Integer> preorderTraversal(treeNode root) {
+		return null;
+	}
+
+	public ArrayList<Integer> inorderTraversal(treeNode root) {
+		ArrayList<Integer> valsInOrder = new ArrayList<Integer>();
+		Stack<treeNode> nodesInOrder = new Stack<treeNode>();
+		ArrayList<treeNode> visited = new ArrayList<treeNode>();
+		
+		if(root == null)
+			return valsInOrder;
+		
+		//push root to stack as starting point
+		nodesInOrder.push(root);
+		
+		treeNode curRoot = root;
+		while(!nodesInOrder.isEmpty()){
+			curRoot = nodesInOrder.peek(); //check value
+			if(curRoot.leftLeaf != null && !visited.contains(curRoot)) { //has left leaf, and it's visited for first time
+				nodesInOrder.push(curRoot.leftLeaf);
+				visited.add(curRoot);
+			} else { // no left leaf, pop out, and push right leaf in if there is any
+				nodesInOrder.pop();
+				valsInOrder.add(new Integer(curRoot.value));
+				if(curRoot.rightLeaf != null){
+					nodesInOrder.push(curRoot.rightLeaf);
+				}
+			}
+		}
+					
+        return valsInOrder;
+    }
+	
+	public ArrayList<Integer> postorderTraversal(treeNode root) {
+        return null;
+    }
+	
+	public void printNodeArray(ArrayList<Integer> nodes){
+		System.out.println();
+		for(int i=0;i<nodes.size();i++){
+			System.out.print(" "+nodes.get(i).toString()+" ");
+		}
+		System.out.println();
 	}
 }
