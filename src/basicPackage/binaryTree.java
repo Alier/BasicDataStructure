@@ -14,10 +14,10 @@ public class binaryTree {
 											// up
 
 	public int running_time_NotRoot = 0;
-	public int running_time_asRoot = 0; 
+	public int running_time_asRoot = 0;
 	public int running_time_NotRoot2 = 0;
-	public int running_time_asRoot2 = 0; 
-	
+	public int running_time_asRoot2 = 0;
+
 	public binaryTree() {
 		root = null;
 		nodeCount = 0;
@@ -348,7 +348,8 @@ public class binaryTree {
 			this.highestPointForMaxPath = curRoot;
 		}
 
-		System.out.println("Running time for method 1:" +this.running_time_asRoot +"/"+this.running_time_NotRoot);
+		System.out.println("Running time for method 1:"
+				+ this.running_time_asRoot + "/" + this.running_time_NotRoot);
 		return maxPathFinal;
 	}
 
@@ -356,7 +357,7 @@ public class binaryTree {
 	// choosing left or right child tree in the path
 	public int maxPathNotRoot(treeNode curRoot) {
 		this.running_time_NotRoot++;
-		
+
 		if (curRoot == null)
 			return 0;
 
@@ -373,7 +374,7 @@ public class binaryTree {
 	// return the max sum of curRoot as root in the final path (meaning curRoot
 	// is in the path, parent is not, taking both left and right in the path)
 	public int maxPathAsRoot(treeNode curRoot) {
-		this.running_time_asRoot ++;
+		this.running_time_asRoot++;
 		if (curRoot == null)
 			return 0;
 
@@ -384,22 +385,22 @@ public class binaryTree {
 	// Method2: traverse the tree once from down to up, calculate both max for
 	// each node, get the highest after all traverse done;
 	public int maxPathSum2(treeNode curRoot) {
-		HashMap<treeNode,Integer> node_notRootMax = new HashMap<treeNode,Integer>();
-		HashMap<treeNode,Integer> node_asRootMax = new HashMap<treeNode,Integer>();
-		
+		HashMap<treeNode, Integer> node_notRootMax = new HashMap<treeNode, Integer>();
+		HashMap<treeNode, Integer> node_asRootMax = new HashMap<treeNode, Integer>();
+
 		int maxPathNotRoot;
 		int maxPathAsRoot;
 		int curMax;
 		int maxPathFinal = -10000;
 		treeNode p = curRoot;
 
-		if(p == null)
+		if (p == null)
 			return 0;
-		
+
 		// max for left tree
-		while((p = p.leftLeaf) != null) {
-			maxPathNotRoot = maxPathNotRoot2(p,node_notRootMax);
-			maxPathAsRoot = maxPathAsRoot2(p,node_notRootMax,node_asRootMax);
+		while ((p = p.leftLeaf) != null) {
+			maxPathNotRoot = maxPathNotRoot2(p, node_notRootMax);
+			maxPathAsRoot = maxPathAsRoot2(p, node_notRootMax, node_asRootMax);
 
 			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
 					: maxPathAsRoot;
@@ -407,13 +408,13 @@ public class binaryTree {
 				maxPathFinal = curMax;
 				this.highestPointForMaxPath = p;
 			}
-		} 
+		}
 
 		p = curRoot;
 		// max for right tree
-		while((p = p.rightLeaf) != null) {
-			maxPathNotRoot = maxPathNotRoot2(p,node_notRootMax);
-			maxPathAsRoot = maxPathAsRoot2(p,node_notRootMax,node_asRootMax);
+		while ((p = p.rightLeaf) != null) {
+			maxPathNotRoot = maxPathNotRoot2(p, node_notRootMax);
+			maxPathAsRoot = maxPathAsRoot2(p, node_notRootMax, node_asRootMax);
 
 			curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
 					: maxPathAsRoot;
@@ -421,11 +422,11 @@ public class binaryTree {
 				maxPathFinal = curMax;
 				this.highestPointForMaxPath = p;
 			}
-		} 
+		}
 
 		// max for root
-		maxPathNotRoot = maxPathNotRoot2(curRoot,node_notRootMax);
-		maxPathAsRoot = maxPathAsRoot2(curRoot,node_notRootMax,node_asRootMax);
+		maxPathNotRoot = maxPathNotRoot2(curRoot, node_notRootMax);
+		maxPathAsRoot = maxPathAsRoot2(curRoot, node_notRootMax, node_asRootMax);
 
 		curMax = maxPathNotRoot > maxPathAsRoot ? maxPathNotRoot
 				: maxPathAsRoot;
@@ -434,15 +435,17 @@ public class binaryTree {
 			this.highestPointForMaxPath = curRoot;
 		}
 
-		System.out.println("Running time for method 2:" +this.running_time_asRoot2 +"/"+this.running_time_NotRoot2);
+		System.out.println("Running time for method 2:"
+				+ this.running_time_asRoot2 + "/" + this.running_time_NotRoot2);
 		return maxPathFinal;
 	}
 
 	// return the max sum of curRoot as the last point in the path, only
 	// choosing left or right child tree in the path
-	public int maxPathNotRoot2(treeNode curRoot, HashMap<treeNode, Integer> node_notRootMax) {
-		this.running_time_NotRoot2 ++;
-		if (node_notRootMax.containsKey(curRoot)) 
+	public int maxPathNotRoot2(treeNode curRoot,
+			HashMap<treeNode, Integer> node_notRootMax) {
+		this.running_time_NotRoot2++;
+		if (node_notRootMax.containsKey(curRoot))
 			return node_notRootMax.get(curRoot);
 
 		if (curRoot.leftLeaf == null && curRoot.rightLeaf == null) {
@@ -461,54 +464,58 @@ public class binaryTree {
 
 	// return the max sum of curRoot as root in the final path (meaning curRoot
 	// is in the path, parent is not, taking both left and right in the path)
-	public int maxPathAsRoot2(treeNode curRoot, HashMap<treeNode, Integer> node_notRootMax, HashMap<treeNode, Integer> node_asRootMax) {
-		this.running_time_asRoot2 ++;
+	public int maxPathAsRoot2(treeNode curRoot,
+			HashMap<treeNode, Integer> node_notRootMax,
+			HashMap<treeNode, Integer> node_asRootMax) {
+		this.running_time_asRoot2++;
 		int curMax = -10000;
-		
+
 		if (node_asRootMax.containsKey(curRoot))
 			return node_asRootMax.get(curRoot);
 
 		if (curRoot.leftLeaf == null && curRoot.rightLeaf == null) {
 			curMax = curRoot.value;
-		}	
-		else if (curRoot.leftLeaf == null && curRoot.rightLeaf != null) {
-			curMax =  maxPathNotRoot2(curRoot.rightLeaf,node_notRootMax) +curRoot.value;
-		} 
-		else if (curRoot.leftLeaf != null && curRoot.rightLeaf == null) {
-			curMax =  maxPathNotRoot2(curRoot.leftLeaf,node_notRootMax) +curRoot.value;
-		} 
-		else {
-			curMax = maxPathNotRoot2(curRoot.leftLeaf,node_notRootMax)
-				+ maxPathNotRoot2(curRoot.rightLeaf,node_notRootMax) + curRoot.value;
+		} else if (curRoot.leftLeaf == null && curRoot.rightLeaf != null) {
+			curMax = maxPathNotRoot2(curRoot.rightLeaf, node_notRootMax)
+					+ curRoot.value;
+		} else if (curRoot.leftLeaf != null && curRoot.rightLeaf == null) {
+			curMax = maxPathNotRoot2(curRoot.leftLeaf, node_notRootMax)
+					+ curRoot.value;
+		} else {
+			curMax = maxPathNotRoot2(curRoot.leftLeaf, node_notRootMax)
+					+ maxPathNotRoot2(curRoot.rightLeaf, node_notRootMax)
+					+ curRoot.value;
 		}
-		
-		node_asRootMax.put(curRoot, curMax);	
+
+		node_asRootMax.put(curRoot, curMax);
 		return curMax;
 	}
-	
-	//reversal of binary tree in pre-order, post-order, and in-order, using no-recurrsive way
+
+	// reversal of binary tree in pre-order, post-order, and in-order, using
+	// no-recurrsive way
 	public ArrayList<Integer> preorderTraversal(treeNode root) {
 		ArrayList<Integer> valsInPreOrder = new ArrayList<Integer>();
 		Stack<treeNode> nodesInPreOrder = new Stack<treeNode>();
-		
-		if(root == null)
+
+		if (root == null)
 			return valsInPreOrder;
-		
-		//push root in to begin with
+
+		// push root in to begin with
 		nodesInPreOrder.push(root);
-		
-		//for each node in stack, pop it up, add right/left , so left is poping up first;
+
+		// for each node in stack, pop it up, add right/left , so left is poping
+		// up first;
 		treeNode curRoot = null;
-		while(!nodesInPreOrder.isEmpty()){
+		while (!nodesInPreOrder.isEmpty()) {
 			curRoot = nodesInPreOrder.pop();
 			valsInPreOrder.add(new Integer(curRoot.value));
-			//add right/left in stack
-			if(curRoot.rightLeaf != null)
+			// add right/left in stack
+			if (curRoot.rightLeaf != null)
 				nodesInPreOrder.push(curRoot.rightLeaf);
-			if(curRoot.leftLeaf != null)
+			if (curRoot.leftLeaf != null)
 				nodesInPreOrder.push(curRoot.leftLeaf);
 		}
-		
+
 		return valsInPreOrder;
 	}
 
@@ -516,67 +523,150 @@ public class binaryTree {
 		ArrayList<Integer> valsInOrder = new ArrayList<Integer>();
 		Stack<treeNode> nodesInOrder = new Stack<treeNode>();
 		ArrayList<treeNode> visited = new ArrayList<treeNode>();
-		
-		if(root == null)
+
+		if (root == null)
 			return valsInOrder;
-		
-		//push root to stack as starting point
+
+		// push root to stack as starting point
 		nodesInOrder.push(root);
-		
+
 		treeNode curRoot = null;
-		while(!nodesInOrder.isEmpty()){
-			curRoot = nodesInOrder.peek(); //check value
-			if(curRoot.leftLeaf != null && !visited.contains(curRoot)) { //has left leaf, and it's visited for first time
+		while (!nodesInOrder.isEmpty()) {
+			curRoot = nodesInOrder.peek(); // check value
+			if (curRoot.leftLeaf != null && !visited.contains(curRoot)) { // has
+																			// left
+																			// leaf,
+																			// and
+																			// it's
+																			// visited
+																			// for
+																			// first
+																			// time
 				nodesInOrder.push(curRoot.leftLeaf);
 				visited.add(curRoot);
-			} else { // no left leaf, pop out, and push right leaf in if there is any
+			} else { // no left leaf, pop out, and push right leaf in if there
+						// is any
 				nodesInOrder.pop();
 				valsInOrder.add(new Integer(curRoot.value));
-				if(curRoot.rightLeaf != null){
+				if (curRoot.rightLeaf != null) {
 					nodesInOrder.push(curRoot.rightLeaf);
 				}
 			}
 		}
-					
-        return valsInOrder;
-    }
-	
+
+		return valsInOrder;
+	}
+
 	public ArrayList<Integer> postorderTraversal(treeNode root) {
 		ArrayList<Integer> valsInPostOrder = new ArrayList<Integer>();
 		Stack<treeNode> nodesInPostOrder = new Stack<treeNode>();
 		ArrayList<treeNode> visited = new ArrayList<treeNode>();
-		
-		if(root == null)
+
+		if (root == null)
 			return valsInPostOrder;
-		
-		//push root in to begin with
+
+		// push root in to begin with
 		nodesInPostOrder.push(root);
-		
+
 		treeNode curNode = null;
-		while(!nodesInPostOrder.isEmpty()){
-			//peek at the topmost node
+		while (!nodesInPostOrder.isEmpty()) {
+			// peek at the topmost node
 			curNode = nodesInPostOrder.peek();
-			//if it has no children or visited before then pop and add to array
-			if((curNode.leftLeaf == null && curNode.rightLeaf == null )|| visited.contains(curNode)) {
+			// if it has no children or visited before then pop and add to array
+			if ((curNode.leftLeaf == null && curNode.rightLeaf == null)
+					|| visited.contains(curNode)) {
 				nodesInPostOrder.pop();
 				valsInPostOrder.add(new Integer(curNode.value));
-			} else {//else push children in right/left order, so left would be visited sooner later
-				visited.add(curNode); //mark as visited
-				if(curNode.rightLeaf != null)
+			} else {// else push children in right/left order, so left would be
+					// visited sooner later
+				visited.add(curNode); // mark as visited
+				if (curNode.rightLeaf != null)
 					nodesInPostOrder.push(curNode.rightLeaf);
-				if(curNode.leftLeaf != null)
+				if (curNode.leftLeaf != null)
 					nodesInPostOrder.push(curNode.leftLeaf);
 			}
 		}
-		
-        return valsInPostOrder;
-    }
-	
-	public void printNodeArray(ArrayList<Integer> nodes){
+
+		return valsInPostOrder;
+	}
+
+	public void printNodeArray(ArrayList<Integer> nodes) {
 		System.out.println();
-		for(int i=0;i<nodes.size();i++){
-			System.out.print(" "+nodes.get(i).toString()+" ");
+		for (int i = 0; i < nodes.size(); i++) {
+			System.out.print(" " + nodes.get(i).toString() + " ");
 		}
 		System.out.println();
+	}
+
+	/*
+	 * Given a binary tree, determine if it is height-balanced. For this
+	 * problem, a height-balanced binary tree is defined as a binary tree in
+	 * which the depth of the two subtrees of every node never differ by more
+	 * than 1.
+	 */
+	public boolean isBalanced(treeNode root,HashMap<treeNode, Integer> nodeDepthes) {
+		if (root == null)
+			return true;
+		int depthLeft = depthOfNode(root.leftLeaf,nodeDepthes);
+		int depthRight = depthOfNode(root.rightLeaf,nodeDepthes);
+		
+		//System.out.println("Node "+root.value + ":"+depthLeft+"/"+depthRight);
+		
+		if ((depthLeft+1 <= depthRight 
+				|| depthLeft-1 >= depthRight) 
+			&& isBalanced(root.leftLeaf,nodeDepthes) 
+			&& isBalanced(root.rightLeaf,nodeDepthes))
+			return true;
+		else 
+			return false;
+	}
+
+	public static int count = 0;
+	public int depthOfNode(treeNode node,HashMap<treeNode, Integer> nodesDepth) {
+		count ++;
+		if (node == null)
+			return 0;
+		
+		//already calculated.
+		if(nodesDepth.containsKey(node)) 
+			return nodesDepth.get(node);
+		
+		int leftDepth = depthOfNode(node.leftLeaf,nodesDepth);
+		int rightDepth = depthOfNode(node.rightLeaf,nodesDepth);
+		
+		int nodeDepth = (leftDepth >= rightDepth ? leftDepth + 1 : rightDepth + 1);
+		//System.out.println("Depth of node "+node.value +":"+nodeDepth);
+		//put into map
+		nodesDepth.put(node, new Integer(nodeDepth));
+		return nodeDepth;
+	}
+	
+	//without hashmap storage.
+	public boolean isBalancedNoStorage(treeNode root) {
+		if (root == null)
+			return true;
+			
+		int depthLeft = depthOfNodeNoStorage(root.leftLeaf);
+		int depthRight = depthOfNodeNoStorage(root.rightLeaf);
+		
+		if ((depthLeft+1 <= depthRight 
+				|| depthLeft-1 >= depthRight) 
+			&& isBalancedNoStorage(root.leftLeaf) 
+			&& isBalancedNoStorage(root.rightLeaf))
+			return true;
+		else 
+			return false;
+	}
+
+	public static int count2 = 0;
+	public int depthOfNodeNoStorage(treeNode node) {
+		count2++;
+		if (node == null)
+			return 0;
+		
+		int leftDepth = depthOfNodeNoStorage(node.leftLeaf);
+		int rightDepth = depthOfNodeNoStorage(node.rightLeaf);
+		
+		return (leftDepth >= rightDepth ? leftDepth + 1 : rightDepth + 1);
 	}
 }

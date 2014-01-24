@@ -1,5 +1,7 @@
 package basicPackage;
 
+import java.util.HashMap;
+
 public class testMain {
 	public static void main(String[] args) {
 		// print
@@ -25,17 +27,21 @@ public class testMain {
 		newObj.printStack(newObj.sortStack(newObj.forSort));*/
 		
 		//for binaryTree
-		//int[] intArray = new int[]{7,4,13,2,6,10,14,1,3,5,11,12,8,9,15};
-		int[] intArray2 = new int[]{1,2,3,6,10,8,5,4,7,9};
+		int[] intArray = new int[]{7,3,4,5,6,2,8,11,10,12,13};
+		//int[] intArray2 = new int[]{1,2,3,6,10,8,5,4,7,9};
 		//int[] intArray2=new int[]{2,1,3};
 		//int sum = 18;
 		//int[] path = new int[intArray2.length];
-		binaryTree newTree = new binaryTree(intArray2);
-		//binarySearchTree newTree = new binarySearchTree(intArray);
+		//binaryTree newTree = new binaryTree(intArray2);
+		binarySearchTree newTree = new binarySearchTree(intArray);
 		System.out.println("======Post-order======= node count:"+newTree.nodeCount);
 		newTree.printTree(newTree.getRoot(),3);
 		newTree.printNodeArray(newTree.postorderTraversal(newTree.getRoot()));
-		//System.out.println("\nisBST ? "+newTree.isBST());
+		HashMap<treeNode, Integer> nodeDepthes = new HashMap<treeNode, Integer>();
+		System.out.println("\nisBalanced ? "+newTree.isBalanced(newTree.getRoot(),nodeDepthes));
+		System.out.println("Count :"+binaryTree.count);
+		System.out.println("\nisBalanced ? "+newTree.isBalancedNoStorage(newTree.getRoot()));
+		System.out.println("Count2 :"+binaryTree.count2);
 		//System.out.println("has pair sum at "+sum+" ? "+newTree.nodesWithSum(sum, newTree.root));
 		//System.out.println("Running binarySearch : "+binarySearchTree.runCount);
 		//System.out.println("minDepth: "+newTree.minDepth(newTree.getRoot()));
