@@ -43,6 +43,8 @@ public class testMain {
 		System.out.println("Count :"+binaryTree.count);
 		System.out.println("\nisBalanced ? "+newTree.isBalancedNoStorage(newTree.getRoot()));
 		System.out.println("Count2 :"+binaryTree.count2);
+		System.out.println("\nisBalanced ? "+newTree.isBalancedIterally(newTree.getRoot()));
+		System.out.println("Count3 :"+binaryTree.count3);
 		//System.out.println("has pair sum at "+sum+" ? "+newTree.nodesWithSum(sum, newTree.root));
 		//System.out.println("Running binarySearch : "+binarySearchTree.runCount);
 		//System.out.println("minDepth: "+newTree.minDepth(newTree.getRoot()));

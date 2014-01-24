@@ -604,69 +604,133 @@ public class binaryTree {
 	 * which the depth of the two subtrees of every node never differ by more
 	 * than 1.
 	 */
-	public boolean isBalanced(treeNode root,HashMap<treeNode, Integer> nodeDepthes) {
+	public boolean isBalanced(treeNode root,
+			HashMap<treeNode, Integer> nodeDepthes) {
 		if (root == null)
 			return true;
-		int depthLeft = depthOfNode(root.leftLeaf,nodeDepthes);
-		int depthRight = depthOfNode(root.rightLeaf,nodeDepthes);
-		
-		//System.out.println("Node "+root.value + ":"+depthLeft+"/"+depthRight);
-		
-		if ((depthLeft+1 <= depthRight 
-				|| depthLeft-1 >= depthRight) 
-			&& isBalanced(root.leftLeaf,nodeDepthes) 
-			&& isBalanced(root.rightLeaf,nodeDepthes))
+		int depthLeft = depthOfNode(root.leftLeaf, nodeDepthes);
+		int depthRight = depthOfNode(root.rightLeaf, nodeDepthes);
+
+		if (!isBalanced(root.leftLeaf, nodeDepthes))
+			return false;
+
+		if (!isBalanced(root.rightLeaf, nodeDepthes))
+			return false;
+
+		if (depthLeft + 1 <= depthRight || depthLeft - 1 >= depthRight)
 			return true;
-		else 
+		else
 			return false;
 	}
 
 	public static int count = 0;
-	public int depthOfNode(treeNode node,HashMap<treeNode, Integer> nodesDepth) {
-		count ++;
+
+	public int depthOfNode(treeNode node, HashMap<treeNode, Integer> nodesDepth) {
+		count++;
 		if (node == null)
 			return 0;
-		
-		//already calculated.
-		if(nodesDepth.containsKey(node)) 
+
+		// already calculated.
+		if (nodesDepth.containsKey(node))
 			return nodesDepth.get(node);
-		
-		int leftDepth = depthOfNode(node.leftLeaf,nodesDepth);
-		int rightDepth = depthOfNode(node.rightLeaf,nodesDepth);
-		
-		int nodeDepth = (leftDepth >= rightDepth ? leftDepth + 1 : rightDepth + 1);
-		//System.out.println("Depth of node "+node.value +":"+nodeDepth);
-		//put into map
+
+		int leftDepth = depthOfNode(node.leftLeaf, nodesDepth);
+		int rightDepth = depthOfNode(node.rightLeaf, nodesDepth);
+
+		int nodeDepth = (leftDepth >= rightDepth ? leftDepth + 1
+				: rightDepth + 1);
+		// System.out.println("Depth of node "+node.value +":"+nodeDepth);
+		// put into map
 		nodesDepth.put(node, new Integer(nodeDepth));
 		return nodeDepth;
 	}
-	
-	//without hashmap storage.
+
+	// without hashmap storage.
 	public boolean isBalancedNoStorage(treeNode root) {
 		if (root == null)
 			return true;
-			
+
+		if (!isBalancedNoStorage(root.leftLeaf))
+			return false;
+
+		if (!isBalancedNoStorage(root.rightLeaf))
+			return false;
+
 		int depthLeft = depthOfNodeNoStorage(root.leftLeaf);
 		int depthRight = depthOfNodeNoStorage(root.rightLeaf);
-		
-		if ((depthLeft+1 <= depthRight 
-				|| depthLeft-1 >= depthRight) 
-			&& isBalancedNoStorage(root.leftLeaf) 
-			&& isBalancedNoStorage(root.rightLeaf))
+
+		if (depthLeft + 1 <= depthRight || depthLeft - 1 >= depthRight)
 			return true;
-		else 
+		else
 			return false;
 	}
 
 	public static int count2 = 0;
+
 	public int depthOfNodeNoStorage(treeNode node) {
 		count2++;
 		if (node == null)
 			return 0;
-		
+
 		int leftDepth = depthOfNodeNoStorage(node.leftLeaf);
 		int rightDepth = depthOfNodeNoStorage(node.rightLeaf);
-		
+
 		return (leftDepth >= rightDepth ? leftDepth + 1 : rightDepth + 1);
+	}
+
+	public static int count3 = 0;
+	// using stack, so not recursive.
+	public boolean isBalancedIterally(treeNode root) {
+		if (root == null)
+			return true;
+
+		Stack<treeNode> nodes = new Stack<treeNode>();
+		HashMap<treeNode, Integer> depthOfNodes = new HashMap<treeNode, Integer>();
+		// visited node meaning its children exists and depth has been
+		// calculated.
+		ArrayList<treeNode> visited = new ArrayList<treeNode>();
+
+		// push root in to start with
+		nodes.push(root);
+
+		treeNode curNode = null;
+		// while there is node in stack, peek it
+		while (!nodes.isEmpty()) {
+			count3 ++;
+			curNode = nodes.peek();
+			// if it's visited before, then pop it out, check its children's difference and
+			// calculate its depth
+			if (visited.contains(curNode)) {
+				nodes.pop();
+				int leftDepth = 0;
+				int rightDepth = 0;
+
+				if (depthOfNodes.containsKey(curNode.leftLeaf))
+					leftDepth = depthOfNodes.get(curNode.leftLeaf);
+				if (depthOfNodes.containsKey(curNode.rightLeaf))
+					rightDepth = depthOfNodes.get(curNode.rightLeaf);
+
+				// depth is 0 if null;
+				if (leftDepth - rightDepth > 1 || rightDepth - leftDepth > 1)
+					return false;
+				else {
+					int curDepth = (leftDepth > rightDepth ? leftDepth + 1
+							: rightDepth + 1);
+					depthOfNodes.put(curNode, new Integer(curDepth));
+				}
+			} else { // first time visiting, adding children if it has.
+				if (curNode.leftLeaf == null && curNode.rightLeaf == null) {
+					nodes.pop();
+					depthOfNodes.put(curNode, new Integer(1)); // leaf depth is 1
+				} else {
+					visited.add(curNode); // mark as visited as children are added
+					if (curNode.leftLeaf != null)
+						nodes.push(curNode.leftLeaf);
+					if (curNode.rightLeaf != null)
+						nodes.push(curNode.rightLeaf);
+				}
+			}
+		}
+		return true;
 	}
 }
