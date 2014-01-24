@@ -488,7 +488,28 @@ public class binaryTree {
 	
 	//reversal of binary tree in pre-order, post-order, and in-order, using no-recurrsive way
 	public ArrayList<Integer> preorderTraversal(treeNode root) {
-		return null;
+		ArrayList<Integer> valsInPreOrder = new ArrayList<Integer>();
+		Stack<treeNode> nodesInPreOrder = new Stack<treeNode>();
+		
+		if(root == null)
+			return valsInPreOrder;
+		
+		//push root in to begin with
+		nodesInPreOrder.push(root);
+		
+		//for each node in stack, pop it up, add right/left , so left is poping up first;
+		treeNode curRoot = null;
+		while(!nodesInPreOrder.isEmpty()){
+			curRoot = nodesInPreOrder.pop();
+			valsInPreOrder.add(new Integer(curRoot.value));
+			//add right/left in stack
+			if(curRoot.rightLeaf != null)
+				nodesInPreOrder.push(curRoot.rightLeaf);
+			if(curRoot.leftLeaf != null)
+				nodesInPreOrder.push(curRoot.leftLeaf);
+		}
+		
+		return valsInPreOrder;
 	}
 
 	public ArrayList<Integer> inorderTraversal(treeNode root) {
@@ -502,7 +523,7 @@ public class binaryTree {
 		//push root to stack as starting point
 		nodesInOrder.push(root);
 		
-		treeNode curRoot = root;
+		treeNode curRoot = null;
 		while(!nodesInOrder.isEmpty()){
 			curRoot = nodesInOrder.peek(); //check value
 			if(curRoot.leftLeaf != null && !visited.contains(curRoot)) { //has left leaf, and it's visited for first time
@@ -521,7 +542,34 @@ public class binaryTree {
     }
 	
 	public ArrayList<Integer> postorderTraversal(treeNode root) {
-        return null;
+		ArrayList<Integer> valsInPostOrder = new ArrayList<Integer>();
+		Stack<treeNode> nodesInPostOrder = new Stack<treeNode>();
+		ArrayList<treeNode> visited = new ArrayList<treeNode>();
+		
+		if(root == null)
+			return valsInPostOrder;
+		
+		//push root in to begin with
+		nodesInPostOrder.push(root);
+		
+		treeNode curNode = null;
+		while(!nodesInPostOrder.isEmpty()){
+			//peek at the topmost node
+			curNode = nodesInPostOrder.peek();
+			//if it has no children or visited before then pop and add to array
+			if((curNode.leftLeaf == null && curNode.rightLeaf == null )|| visited.contains(curNode)) {
+				nodesInPostOrder.pop();
+				valsInPostOrder.add(new Integer(curNode.value));
+			} else {//else push children in right/left order, so left would be visited sooner later
+				visited.add(curNode); //mark as visited
+				if(curNode.rightLeaf != null)
+					nodesInPostOrder.push(curNode.rightLeaf);
+				if(curNode.leftLeaf != null)
+					nodesInPostOrder.push(curNode.leftLeaf);
+			}
+		}
+		
+        return valsInPostOrder;
     }
 	
 	public void printNodeArray(ArrayList<Integer> nodes){
