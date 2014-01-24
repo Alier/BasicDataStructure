@@ -296,6 +296,34 @@ public class binaryTree {
 	}
 
 	/*
+	 * Given a binary tree, find its maximum depth.
+	 * 
+	 * The maximum depth is the number of nodes along the longest path from the
+	 * root node down to the farthest leaf node.
+	 */
+	public int maxDepth(treeNode root) {
+		if (root == null)
+			return 0;
+
+		if (root.leftLeaf == null && root.rightLeaf == null)
+			return 1;
+
+		if (root.leftLeaf != null && root.rightLeaf != null) {
+			int maxLeft = maxDepth(root.leftLeaf);
+			int maxRight = maxDepth(root.rightLeaf);
+
+			return maxLeft <= maxRight ? (maxRight + 1) : (maxLeft + 1);
+		}
+
+		// rightLeaf only
+		if (root.leftLeaf == null) {
+			return maxDepth(root.rightLeaf) + 1;
+		} else {// leftLeaf only
+			return maxDepth(root.leftLeaf) + 1;
+		}
+	}
+	
+	/*
 	 * Given a binary tree, find the maximum path sum. The path may start and
 	 * end at any node in the tree.--- DON'T need to be in order from root down
 	 */
@@ -679,6 +707,7 @@ public class binaryTree {
 	}
 
 	public static int count3 = 0;
+
 	// using stack, so not recursive.
 	public boolean isBalancedIterally(treeNode root) {
 		if (root == null)
@@ -696,9 +725,10 @@ public class binaryTree {
 		treeNode curNode = null;
 		// while there is node in stack, peek it
 		while (!nodes.isEmpty()) {
-			count3 ++;
+			count3++;
 			curNode = nodes.peek();
-			// if it's visited before, then pop it out, check its children's difference and
+			// if it's visited before, then pop it out, check its children's
+			// difference and
 			// calculate its depth
 			if (visited.contains(curNode)) {
 				nodes.pop();
@@ -721,9 +751,11 @@ public class binaryTree {
 			} else { // first time visiting, adding children if it has.
 				if (curNode.leftLeaf == null && curNode.rightLeaf == null) {
 					nodes.pop();
-					depthOfNodes.put(curNode, new Integer(1)); // leaf depth is 1
+					depthOfNodes.put(curNode, new Integer(1)); // leaf depth is
+																// 1
 				} else {
-					visited.add(curNode); // mark as visited as children are added
+					visited.add(curNode); // mark as visited as children are
+											// added
 					if (curNode.leftLeaf != null)
 						nodes.push(curNode.leftLeaf);
 					if (curNode.rightLeaf != null)
