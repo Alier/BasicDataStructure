@@ -27,7 +27,8 @@ public class testMain {
 		newObj.printStack(newObj.sortStack(newObj.forSort));*/
 		
 		//for binaryTree
-		int[] intArray = new int[]{7,3,4,5,6,2,8,11,10,12,13};
+		//int[] intArray = new int[]{7,3,4,5,6,2,8,11,10,12,13}; //-- for testing balanced. false
+		int[] intArray = new int[]{1,2,3,4,5,6,7};
 		//int[] intArray2 = new int[]{1,2,3,6,10,8,5,4,7,9};
 		//int[] intArray2=new int[]{2,1,3};
 		//int sum = 18;
