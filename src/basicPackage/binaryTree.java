@@ -322,7 +322,7 @@ public class binaryTree {
 			return maxDepth(root.leftLeaf) + 1;
 		}
 	}
-	
+
 	/*
 	 * Given a binary tree, find the maximum path sum. The path may start and
 	 * end at any node in the tree.--- DON'T need to be in order from root down
@@ -764,5 +764,82 @@ public class binaryTree {
 			}
 		}
 		return true;
+	}
+
+	/*
+	 * Given a binary tree, return the level order traversal of its nodes'
+	 * values. (ie, from left to right, level by level).
+	 * 
+	 * For example: Given binary tree {3,9,20,#,#,15,7},return its level order
+	 * traversal as: [ [3], [9,20], [15,7] ]
+	 */
+	public ArrayList<ArrayList<Integer>> levelOrder(treeNode root) {
+		ArrayList<ArrayList<treeNode>> listLevelNodes = new ArrayList<ArrayList<treeNode>>();
+		ArrayList<ArrayList<Integer>> listLevelValues = new ArrayList<ArrayList<Integer>>();
+		int curLevel = 0;
+
+		if (root == null)
+			return listLevelValues;
+
+		// put root into the first element of listLevelNodes, set the current
+		// level index to 0, corresponding to its index in array;
+		ArrayList<treeNode> curLevelNode = new ArrayList<treeNode>();
+		curLevelNode.add(root);
+		listLevelNodes.add(curLevelNode);
+		ArrayList<Integer> curLevelValue = new ArrayList<Integer>();
+		curLevelValue.add(new Integer(root.value));
+		listLevelValues.add(curLevelValue);
+
+		treeNode curNode = null;
+		while (true) {
+			ArrayList<treeNode> nextLevelNode = new ArrayList<treeNode>();
+			ArrayList<Integer> nextLevelValue = new ArrayList<Integer>();
+
+			// for each level's nodes in the list already, find its children to
+			// add to next level's array
+			for (int i = 0; i < listLevelNodes.get(curLevel).size(); i++) {
+				curNode = listLevelNodes.get(curLevel).get(i);
+				if (curNode.leftLeaf != null) {
+					nextLevelNode.add(curNode.leftLeaf);
+					nextLevelValue.add(new Integer(curNode.leftLeaf.value));
+				}
+				if (curNode.rightLeaf != null) {
+					nextLevelNode.add(curNode.rightLeaf);
+					nextLevelValue.add(new Integer(curNode.rightLeaf.value));
+				}
+			}
+			
+			if(nextLevelNode.isEmpty()) { //finish traversing tree
+				break;
+			} else {
+				listLevelNodes.add(nextLevelNode);
+				listLevelValues.add(nextLevelValue);
+				curLevel++;
+			} 
+		}
+
+		return listLevelValues;
+	}
+
+	public void printNodesByLevel(ArrayList<ArrayList<Integer>> levelNodes) {
+		if (levelNodes == null)
+			return;
+
+		System.out.println("[");
+		for (int i = 0; i < levelNodes.size(); i++) { // each level
+			System.out.print("[");
+			for (int j = 0; j < levelNodes.get(i).size(); j++) {
+				if (j == 0)
+					System.out.print(levelNodes.get(i).get(j));
+				else
+					System.out.print("," + levelNodes.get(i).get(j));
+			}
+
+			if (i == levelNodes.size())
+				System.out.println("]");
+			else
+				System.out.println("],");
+		}
+		System.out.println("]");
 	}
 }

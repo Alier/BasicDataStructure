@@ -1,7 +1,5 @@
 package basicPackage;
 
-import java.util.HashMap;
-
 public class testMain {
 	public static void main(String[] args) {
 		// print
@@ -28,15 +26,16 @@ public class testMain {
 		
 		//for binaryTree
 		//int[] intArray = new int[]{7,3,4,5,6,2,8,11,10,12,13}; //-- for testing balanced. false
-		int[] intArray = new int[]{1,2,3,4,5,6,7};
-		//int[] intArray2 = new int[]{1,2,3,6,10,8,5,4,7,9};
+		//int[] intArray = new int[]{1,2,3,4,5,6,7};
+		int[] intArray2 = new int[]{1,2,3,6,10,8,5,4,7,9};
 		//int[] intArray2=new int[]{2,1,3};
 		//int sum = 18;
 		//int[] path = new int[intArray2.length];
-		//binaryTree newTree = new binaryTree(intArray2);
-		binarySearchTree newTree = new binarySearchTree(intArray);
-		System.out.println("======Post-order======= node count:"+newTree.nodeCount);
-		newTree.printTree(newTree.getRoot(),3);
+		binaryTree newTree = new binaryTree(intArray2);
+		//binarySearchTree newTree = new binarySearchTree(intArray);
+		newTree.printNodesByLevel(newTree.levelOrder(newTree.getRoot()));
+//		System.out.println("======In-order======= node count:"+newTree.nodeCount);
+//		newTree.printTree(newTree.getRoot(),1);
 //		newTree.printNodeArray(newTree.postorderTraversal(newTree.getRoot()));
 //		HashMap<treeNode, Integer> nodeDepthes = new HashMap<treeNode, Integer>();
 //		System.out.println("\nisBalanced ? "+newTree.isBalanced(newTree.getRoot(),nodeDepthes));
