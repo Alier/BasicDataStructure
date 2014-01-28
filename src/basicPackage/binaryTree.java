@@ -808,17 +808,69 @@ public class binaryTree {
 					nextLevelValue.add(new Integer(curNode.rightLeaf.value));
 				}
 			}
-			
-			if(nextLevelNode.isEmpty()) { //finish traversing tree
+
+			if (nextLevelNode.isEmpty()) { // finish traversing tree
 				break;
 			} else {
 				listLevelNodes.add(nextLevelNode);
 				listLevelValues.add(nextLevelValue);
 				curLevel++;
-			} 
+			}
 		}
 
 		return listLevelValues;
+	}
+
+	/*
+	 * Given a binary tree, return the bottom-up level order traversal of its
+	 * nodes' values. (ie, from left to right, level by level from leaf to
+	 * root).
+	 */
+	public ArrayList<ArrayList<Integer>> levelOrderBottom(treeNode root) {
+		ArrayList<ArrayList<treeNode>> listLevelNodes = new ArrayList<ArrayList<treeNode>>();
+		ArrayList<ArrayList<Integer>> listLevelValuesBottomUp = new ArrayList<ArrayList<Integer>>();
+
+		if (root == null)
+			return listLevelValuesBottomUp;
+
+		ArrayList<treeNode> newList = new ArrayList<treeNode>();
+		newList.add(root);
+		listLevelNodes.add(newList);
+		int curLevel = 0;
+
+		treeNode curNode = null;
+		while (true) { // for each level
+			newList = new ArrayList<treeNode>();
+
+			for (int i = 0; i < listLevelNodes.get(curLevel).size(); i++) {
+				curNode = listLevelNodes.get(curLevel).get(i);
+				if (curNode.leftLeaf != null)
+					newList.add(curNode.leftLeaf);
+				if (curNode.rightLeaf != null)
+					newList.add(curNode.rightLeaf);
+			}
+
+			if (newList.isEmpty()) {
+				break; // end of tree traversal
+			} else {
+				listLevelNodes.add(newList);
+				curLevel++;
+			}
+		}
+
+		//set the values from bottom up in the new array array;
+		for(int nodeLevel = listLevelNodes.size()-1; nodeLevel>=0; nodeLevel--){
+			ArrayList<Integer> valueList = new ArrayList<Integer>();
+			
+			for(int j=0;j<listLevelNodes.get(nodeLevel).size();j++) { //j is nodes in the same level
+				curNode = listLevelNodes.get(nodeLevel).get(j);
+				valueList.add(new Integer(curNode.value));
+			}
+			
+			listLevelValuesBottomUp.add(valueList);
+		}
+		
+		return listLevelValuesBottomUp;
 	}
 
 	public void printNodesByLevel(ArrayList<ArrayList<Integer>> levelNodes) {
@@ -842,4 +894,5 @@ public class binaryTree {
 		}
 		System.out.println("]");
 	}
+
 }
