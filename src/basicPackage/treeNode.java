@@ -13,4 +13,10 @@ public class treeNode {
 		rightLeaf = null;
 	}
 	
+	public treeNode(){
+		value = -1;
+		parent = null;
+		leftLeaf = null;
+		rightLeaf = null;
+	}
 }
