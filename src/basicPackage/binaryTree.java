@@ -18,6 +18,25 @@ public class binaryTree {
 	public int running_time_NotRoot2 = 0;
 	public int running_time_asRoot2 = 0;
 
+	//inner class
+	public static class PathMaxPair{
+		public int maxPathFromRoot;
+		public int maxPathLeafToLeaf;
+		
+		public PathMaxPair(int a, int b){
+			maxPathFromRoot = a;
+			maxPathLeafToLeaf = b;
+		}
+		
+		public int getMaxPathNoRoot(){
+			return maxPathLeafToLeaf;
+		}
+		
+		public int getMaxPathFromRoot(){
+			return maxPathFromRoot;
+		}
+	}
+	
 	public binaryTree() {
 		root = null;
 		nodeCount = 0;
@@ -39,7 +58,7 @@ public class binaryTree {
 	public binaryTree(int[] intArray) {
 		for (int i = 0; i < intArray.length; i++) {
 			// add into tree
-			if (i == 0) {// first node
+			if (i == 0) {// fist node
 				root = new treeNode(intArray[i]);
 				lastInsertNode = root;
 				nodeCount = 1;
@@ -333,6 +352,75 @@ public class binaryTree {
 	 * Given a binary tree, find the maximum path sum. The path may start and
 	 * end at any node in the tree.--- DON'T need to be in order from root down
 	 */
+	// Method 3: recurrsive, every node should have two value calculated. 
+	// MaxFromRoot : max sum from root to leaf;
+	// MaxNoRoot: max sum from leaf to leaf in subtree with curnode as root;
+	public int maxPathSum3(treeNode root) {
+        if(root == null) 
+            return 0;
+            
+        if(root.leftLeaf == null && root.rightLeaf == null) 
+            return root.value;
+
+        PathMaxPair rootPair = maxPathPair(root);
+		return rootPair.getMaxPathNoRoot();
+	}
+	
+	public PathMaxPair maxPathPair(treeNode root){
+	    if(root == null) {
+			PathMaxPair curPair = new PathMaxPair(0,0);
+			return curPair;
+		}
+			
+		if(root.leftLeaf == null && root.rightLeaf == null) {
+			int MaxFromCurRoot = root.value;
+			int MaxLeafToLeaf = 0; 
+			PathMaxPair curPair = new PathMaxPair(MaxFromCurRoot,MaxLeafToLeaf);
+			return curPair;
+		}
+		
+		int leftMaxFromRoot=0;
+		int leftMaxLeaf = 0;
+		int rightMaxFromRoot = 0;
+		int rightMaxLeaf = 0;
+		int MaxFromCurRoot = 0;
+		int MaxLeafToLeaf = 0;
+		
+		if(root.leftLeaf != null) {
+		    PathMaxPair leftPair = maxPathPair(root.leftLeaf);
+		    leftMaxFromRoot = leftPair.getMaxPathFromRoot();
+		    leftMaxLeaf = leftPair.getMaxPathNoRoot();
+		}
+		
+		if(root.rightLeaf != null) {
+		    PathMaxPair rightPair = maxPathPair(root.rightLeaf);
+	    	rightMaxFromRoot = rightPair.getMaxPathFromRoot();
+		    rightMaxLeaf = rightPair.getMaxPathNoRoot();
+		}
+		
+		if(root.leftLeaf != null && root.rightLeaf != null) {
+		    MaxFromCurRoot =  leftMaxFromRoot > rightMaxFromRoot ? 
+				(leftMaxFromRoot+root.value):(rightMaxFromRoot+root.value);
+		} else if(root.leftLeaf == null && root.rightLeaf != null) {
+		    MaxFromCurRoot = leftMaxFromRoot+root.value;
+		} else {
+		    MaxFromCurRoot = rightMaxFromRoot+root.value;
+		}
+				
+		//from left tree to right tree passing curNode
+		int curLeafMax = leftMaxFromRoot + rightMaxFromRoot + root.value;
+		
+		//max of the three is the new max for leaf to leaf from curRoot;
+		MaxLeafToLeaf = curLeafMax; 
+		if(root.leftLeaf != null && leftMaxLeaf > MaxLeafToLeaf)
+			MaxLeafToLeaf = leftMaxLeaf;
+		if(root.rightLeaf != null && rightMaxLeaf > MaxLeafToLeaf)
+			MaxLeafToLeaf = rightMaxLeaf;
+				
+		PathMaxPair curPair = new PathMaxPair(MaxFromCurRoot,MaxLeafToLeaf);
+		return curPair;
+	}
+	
 	// Method 1: too time-consuming, as the tree has to be traversed couple
 	// times.
 	public int maxPathSum(treeNode curRoot) {
