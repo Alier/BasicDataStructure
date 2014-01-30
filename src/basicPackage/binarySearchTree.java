@@ -1,5 +1,7 @@
 package basicPackage;
 
+import java.util.ArrayList;
+
 public class binarySearchTree extends binaryTree {
 	public static int runCount ;
 	
@@ -116,4 +118,81 @@ public class binarySearchTree extends binaryTree {
 		return -1;
 	}
 
+	/*Given n, how many structurally unique BST's (binary search trees) that store values 1...n?
+	For example,
+	Given n = 3, there are a total of 5 unique BST's.*/
+	public int numTrees(int n) {
+		if(n <= 0)
+			return 0;
+		
+		if(n == 1)
+			return 1;
+		
+		int result = 0 ;
+		
+		for(int i = 1;i <= n; i++) {
+			if( i == 1 || i == n )
+				result += numTrees(n-1);
+			else
+				result += numTrees(i-1) * numTrees(n-i) ;
+		}
+	
+		return result;
+	}
+	
+	//Based on numTrees, return all these trees;
+	/*Given n, generate all structurally unique BST's (binary search trees) that store values 1...n.
+	For example,
+	Given n = 3, your program should return all 5 unique BST's shown below.*/
+	public ArrayList<treeNode> generateTrees(int n){
+		if(n == 0)
+			return null;
+		
+		return generateSubTree(1,n);
+	}
+	
+	//this function should return the root array of all possible subLeftTree
+	public ArrayList<treeNode> generateSubTree(int subtree_start, int subtree_end){
+		ArrayList<treeNode> subTreeRoots = new ArrayList<treeNode>();
+		
+		if(subtree_end < subtree_start)
+			return null;
+		
+		if(subtree_end == subtree_start) {
+			treeNode subRoot = new treeNode(subtree_start);
+			subTreeRoots.add(subRoot);
+			return subTreeRoots;
+		}
+		
+		for(int i=subtree_start;i<=subtree_end;i++) {
+			ArrayList<treeNode> leftTreeRoots = generateSubTree(subtree_start,i-1);
+			ArrayList<treeNode> rightTreeRoots = generateSubTree(i+1,subtree_end);
+
+			//only left subtree
+			if(leftTreeRoots != null && rightTreeRoots == null) {
+				for(int j = 0;j<leftTreeRoots.size();j++) {
+					treeNode subRoot = new treeNode(i);
+					subRoot.leftLeaf = leftTreeRoots.get(j);
+					subTreeRoots.add(subRoot);
+				}
+			} else if(leftTreeRoots == null && rightTreeRoots != null){ //only right subtree
+				for(int j = 0;j<rightTreeRoots.size();j++) {
+					treeNode subRoot = new treeNode(i);
+					subRoot.rightLeaf = rightTreeRoots.get(j);
+					subTreeRoots.add(subRoot);
+				}
+			} else { // left and right subtree both exists, all combinations
+				for(int j = 0;j<leftTreeRoots.size();j++) {
+					for(int k = 0;k<rightTreeRoots.size();k++) {
+						treeNode subRoot = new treeNode(i);
+						subRoot.leftLeaf = leftTreeRoots.get(j);
+						subRoot.rightLeaf = rightTreeRoots.get(k);
+						subTreeRoots.add(subRoot);
+					}
+				}
+			}
+		}
+		
+		return subTreeRoots;
+	}
 }
