@@ -398,17 +398,22 @@ public class binaryTree {
 		    rightMaxLeaf = rightPair.getMaxPathNoRoot();
 		}
 		
-		if(root.leftLeaf != null && root.rightLeaf != null) {
+		MaxFromCurRoot  = root.value;
+		if(leftMaxFromRoot > 0 && rightMaxFromRoot > 0) {
 		    MaxFromCurRoot =  leftMaxFromRoot > rightMaxFromRoot ? 
 				(leftMaxFromRoot+root.value):(rightMaxFromRoot+root.value);
-		} else if(root.leftLeaf == null && root.rightLeaf != null) {
+		} else if(leftMaxFromRoot > 0 && rightMaxFromRoot <= 0) {
 		    MaxFromCurRoot = leftMaxFromRoot+root.value;
-		} else {
+		} else if(leftMaxFromRoot <= 0 && rightMaxFromRoot > 0) {
 		    MaxFromCurRoot = rightMaxFromRoot+root.value;
 		}
 				
 		//from left tree to right tree passing curNode
-		int curLeafMax = leftMaxFromRoot + rightMaxFromRoot + root.value;
+		int curLeafMax = root.value;
+		if(leftMaxFromRoot > 0)
+			curLeafMax += leftMaxFromRoot;
+		if(rightMaxFromRoot > 0)
+			curLeafMax += rightMaxFromRoot;
 		
 		//max of the three is the new max for leaf to leaf from curRoot;
 		MaxLeafToLeaf = curLeafMax; 
