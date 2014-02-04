@@ -1276,12 +1276,29 @@ public class binaryTree {
     		return false; 
     	
     	for(int i=0,j=inorder.size()-1;i<rootIndex && j> rootIndex;i++,j--){
-    		System.out.println("data ["+i+"] is "+inorder.get(i).value);
-    		System.out.println("data ["+j+"] is "+inorder.get(j).value);
-    		if(inorder.get(i).value != inorder.get(j).value)
+    		//System.out.println("data ["+i+"] is "+inorder.get(i).value);
+    		//System.out.println("data ["+j+"] is "+inorder.get(j).value);
+    		if(subTreeSymmetric(inorder.get(i),inorder.get(j)) == false)
     			return false;
     	}
     	
     	return true;
+    }
+    
+    public boolean subTreeSymmetric(treeNode leftRoot, treeNode rightRoot){
+        if(leftRoot.value != rightRoot.value)
+            return false;
+            
+        if((leftRoot.leftLeaf == null && rightRoot.rightLeaf != null ) ||
+            (leftRoot.leftLeaf !=null && rightRoot.rightLeaf == null ) ||
+            (leftRoot.rightLeaf == null && rightRoot.leftLeaf != null ) ||
+            (leftRoot.rightLeaf !=null && rightRoot.leftLeaf == null))
+            return false;
+            
+        if((leftRoot.leftLeaf != null && leftRoot.leftLeaf.value != rightRoot.rightLeaf.value) || 
+           (leftRoot.rightLeaf != null && leftRoot.rightLeaf.value != rightRoot.leftLeaf.value))
+           return false;
+           
+        return true;
     }
 }

@@ -34,7 +34,7 @@ public class testMain {
 		//int[] intArray2=new int[]{2,1,3};
 		//int sum = 18;
 		//int[] path = new int[intArray2.length];
-		binaryTree newTree = new binaryTree(new int[]{1,2});
+		binaryTree newTree = new binaryTree(new int[]{1,2,2,1,3,3,0});
 		
 		//binaryTree newTree = new binaryTree(inorder, postorder,true);
 		//binaryTree newTree2 = new binaryTree(preorder,inorder);
