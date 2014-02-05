@@ -19,4 +19,11 @@ public class treeNode {
 		leftLeaf = null;
 		rightLeaf = null;
 	}
+	
+	public treeNode(treeNode orig){
+		value = orig.value;
+		parent = orig.parent;
+		leftLeaf = orig.leftLeaf;
+		rightLeaf = orig.rightLeaf;
+	}
 }

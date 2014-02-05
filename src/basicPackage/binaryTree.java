@@ -69,6 +69,93 @@ public class binaryTree {
 		}
 	}
 
+	/*
+	 * Given preorder and inorder traversal of a tree, construct the binary
+	 * tree.
+	 */
+	public binaryTree(int[] preorder, int[] inorder) {
+		if (preorder.length == 0 || inorder.length == 0) {
+			System.out.println("Neither parameter can't be empty array");
+		}
+
+		// the first node in preOrder is the tree root. Add it to the new tree
+		// first;
+		this.root = new treeNode(preorder[0]);
+
+		// find its index in inorder array, anything to the left should belong
+		// to left tree, wise versa;
+		int curRootIndexInOrder = -1;
+		for (int i = 0; i < inorder.length; i++) {
+			if (inorder[i] == root.value) {
+				curRootIndexInOrder = i;
+				break;
+			}
+		}
+
+		// get the mapping of in-order nodes' index in pre-order array
+		int[] indexInPreOrder = new int[inorder.length];
+		for (int i = 0; i < inorder.length; i++) {
+			for (int j = 0; j < preorder.length; j++) {
+				if (preorder[j] == inorder[i]) {
+					indexInPreOrder[i] = j;
+					//System.out.println("Mapping "+(i+1)+"--"+j);
+					break;
+				}
+			}
+		}
+		//System.out.println();
+		
+		// add left tree
+		addSubtree(root, true, inorder, 0, curRootIndexInOrder - 1,
+				false, null, null, preorder, indexInPreOrder);
+		// add right tree
+		addSubtree(root, false, inorder, curRootIndexInOrder + 1, inorder.length - 1, 
+				false, null, null, preorder, indexInPreOrder);
+	}
+	
+	/*
+	 * Given inorder and postorder traversal of a tree, construct the binary
+	 * tree.
+	 */
+	public binaryTree(int[] inorder, int[] postorder, boolean flagPostorder) {
+		if (inorder.length == 0 || postorder.length == 0) {
+			System.out.println("Neither parameter can't be empty array");
+		}
+
+		// the last node in postOrder is the tree root. Add it to the new tree
+		// first;
+		this.root = new treeNode(postorder[postorder.length - 1]);
+
+		// in in-order array, anything before root node should go into left
+		// tree, anything after root node should go into right tree
+		int curRootIndexInOrder = 0;
+		for (int i = 0; i < inorder.length; i++) {
+			if (inorder[i] == root.value) {
+				curRootIndexInOrder = i;
+				break;
+			}
+		}
+
+		// get the index in postorder array of all nodes in order in inorder;
+		int[] indexInPostorder = new int[inorder.length];
+		for (int i = 0; i < inorder.length; i++) {
+			for (int j = 0; j < postorder.length; j++) {
+				if (postorder[j] == inorder[i]) {
+					indexInPostorder[i] = j;
+					break;
+				}
+			}
+		}
+
+		// add left tree
+		addSubtree(root, true, inorder, 0, curRootIndexInOrder - 1, true,
+				postorder, indexInPostorder, null, null);
+		// add right tree
+		addSubtree(root, false, inorder, curRootIndexInOrder + 1,
+				inorder.length - 1, true, postorder, indexInPostorder, null,
+				null);
+	}
+	
 	public treeNode getRoot() {
 		return root;
 	}
@@ -398,17 +485,22 @@ public class binaryTree {
 		    rightMaxLeaf = rightPair.getMaxPathNoRoot();
 		}
 		
-		if(root.leftLeaf != null && root.rightLeaf != null) {
+		MaxFromCurRoot  = root.value;
+		if(leftMaxFromRoot > 0 && rightMaxFromRoot > 0) {
 		    MaxFromCurRoot =  leftMaxFromRoot > rightMaxFromRoot ? 
 				(leftMaxFromRoot+root.value):(rightMaxFromRoot+root.value);
-		} else if(root.leftLeaf == null && root.rightLeaf != null) {
+		} else if(leftMaxFromRoot > 0 && rightMaxFromRoot <= 0) {
 		    MaxFromCurRoot = leftMaxFromRoot+root.value;
-		} else {
+		} else if(leftMaxFromRoot <= 0 && rightMaxFromRoot > 0) {
 		    MaxFromCurRoot = rightMaxFromRoot+root.value;
 		}
 				
 		//from left tree to right tree passing curNode
-		int curLeafMax = leftMaxFromRoot + rightMaxFromRoot + root.value;
+		int curLeafMax = root.value;
+		if(leftMaxFromRoot > 0)
+			curLeafMax += leftMaxFromRoot;
+		if(rightMaxFromRoot > 0)
+			curLeafMax += rightMaxFromRoot;
 		
 		//max of the three is the new max for leaf to leaf from curRoot;
 		MaxLeafToLeaf = curLeafMax; 
@@ -1064,49 +1156,6 @@ public class binaryTree {
 		System.out.println("]");
 	}
 
-	/*
-	 * Given inorder and postorder traversal of a tree, construct the binary
-	 * tree.
-	 */
-	public binaryTree(int[] inorder, int[] postorder, boolean flagPostorder) {
-		if (inorder.length == 0 || postorder.length == 0) {
-			System.out.println("Neither parameter can't be empty array");
-		}
-
-		// the last node in postOrder is the tree root. Add it to the new tree
-		// first;
-		this.root = new treeNode(postorder[postorder.length - 1]);
-
-		// in in-order array, anything before root node should go into left
-		// tree, anything after root node should go into right tree
-		int curRootIndexInOrder = 0;
-		for (int i = 0; i < inorder.length; i++) {
-			if (inorder[i] == root.value) {
-				curRootIndexInOrder = i;
-				break;
-			}
-		}
-
-		// get the index in postorder array of all nodes in order in inorder;
-		int[] indexInPostorder = new int[inorder.length];
-		for (int i = 0; i < inorder.length; i++) {
-			for (int j = 0; j < postorder.length; j++) {
-				if (postorder[j] == inorder[i]) {
-					indexInPostorder[i] = j;
-					break;
-				}
-			}
-		}
-
-		// add left tree
-		addSubtree(root, true, inorder, 0, curRootIndexInOrder - 1, true,
-				postorder, indexInPostorder, null, null);
-		// add right tree
-		addSubtree(root, false, inorder, curRootIndexInOrder + 1,
-				inorder.length - 1, true, postorder, indexInPostorder, null,
-				null);
-	}
-
 	// add the subtree's root to curRoot.
 	// if it's to add left, tree, leftflag is true. otherwise it's fall.
 	public void addSubtree(treeNode curRoot, boolean leftFlag, int[] inorder,
@@ -1182,50 +1231,6 @@ public class binaryTree {
 		return;
 	}
 
-	/*
-	 * Given preorder and inorder traversal of a tree, construct the binary
-	 * tree.
-	 */
-	public binaryTree(int[] preorder, int[] inorder) {
-		if (preorder.length == 0 || inorder.length == 0) {
-			System.out.println("Neither parameter can't be empty array");
-		}
-
-		// the first node in preOrder is the tree root. Add it to the new tree
-		// first;
-		this.root = new treeNode(preorder[0]);
-
-		// find its index in inorder array, anything to the left should belong
-		// to left tree, wise versa;
-		int curRootIndexInOrder = -1;
-		for (int i = 0; i < inorder.length; i++) {
-			if (inorder[i] == root.value) {
-				curRootIndexInOrder = i;
-				break;
-			}
-		}
-
-		// get the mapping of in-order nodes' index in pre-order array
-		int[] indexInPreOrder = new int[inorder.length];
-		for (int i = 0; i < inorder.length; i++) {
-			for (int j = 0; j < preorder.length; j++) {
-				if (preorder[j] == inorder[i]) {
-					indexInPreOrder[i] = j;
-					//System.out.println("Mapping "+(i+1)+"--"+j);
-					break;
-				}
-			}
-		}
-		//System.out.println();
-		
-		// add left tree
-		addSubtree(root, true, inorder, 0, curRootIndexInOrder - 1,
-				false, null, null, preorder, indexInPreOrder);
-		// add right tree
-		addSubtree(root, false, inorder, curRootIndexInOrder + 1, inorder.length - 1, 
-				false, null, null, preorder, indexInPreOrder);
-	}
-	
 	/*Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).*/
 	public boolean isSymmetric(treeNode root) {
         if(root == null)

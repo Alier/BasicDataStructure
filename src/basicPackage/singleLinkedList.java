@@ -13,15 +13,6 @@ public class singleLinkedList {
 		head = new ListNode(rootVal);
 	}
 	
-	public class ListNode {
-		int val;
-		ListNode next;
-		ListNode(int x) {
-			val = x;
-			next = null;
-		}
-	}
-	
 	/*
 	 * Given a sorted linked list, delete all duplicates such that each element
 	 * appear only once.
@@ -46,8 +37,6 @@ public class singleLinkedList {
                 p = p.next;
             }
         }
-        
         return head;
     }
-	
 }
