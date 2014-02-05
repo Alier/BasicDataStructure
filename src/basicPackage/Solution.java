@@ -3,54 +3,215 @@ package basicPackage;
 import java.util.ArrayList;
 
 	public class Solution {
-	/*
-	 * Given a collection of numbers that might contain duplicates, return all
-	 * possible unique permutations.
-	 * 
-	 * For example, [1,1,2] have the following unique permutations: [1,1,2],
-	 * [1,2,1], and [2,1,1].
-	 */
+		/*
+		 * Best Time to Buy and Sell Stock III 
+		 * Say you have an array for which the i'th element is the price of a given stock on day i.
+		 * 
+		 * Design an algorithm to find the maximum profit. You may complete at most
+		 * two transactions.
+		 * 
+		 * Note: You may not engage in multiple transactions at the same time (ie,
+		 * you must sell the stock before you buy again).
+		 */
+		
+		/**** INCOMPLETE !!!! ****/
+		public int maxProfit2(int[] prices){	
+			if(prices.length <= 1)
+				return 0;
+			
+			//have at least 2 members
+			//form a new array with profit between two adjacent prices;
+			int[] profits = new int[prices.length-1];
+			//go through profits array, record all index for positive profit in one day turn-over transactions
+			ArrayList<Integer> posIndex = new ArrayList<Integer>();
+			for(int i=0;i<prices.length-1;i++){
+				profits[i]=prices[i+1]-prices[i];
+				if(profits[i] > 0)
+					posIndex.add(new Integer(i));
+			}
+			
+			/* this profit array should have positive and negative numbers. 
+			 * e.g [-1,2,-3,4,5,6,-7,8]
+			 * from head, merge positive nodes in sequence that could be merged(indicating merging the two transactions into one)
+			 * merged new node should have value > both positive nodes, otherwise don't merge. 
+			 * Put the new node in a new ArrayList.
+			 */
+			//merge consecutive positives first
+			for(int j=0;j<posIndex.size()-1;j++){
+				int curPos = posIndex.get(j);
+				int nextPos = posIndex.get(j+1);
+				if(nextPos == curPos+1){
+					profits[nextPos] +=profits[curPos];
+					profits[curPos] = 0;
+					posIndex.remove(j);
+					j--;
+				}
+			}
+			
+			if(posIndex.size() == 0) //no positive transaction
+				return 0;
+			
+			if(posIndex.size() == 1) 
+				return profits[posIndex.get(0)];
+			
+			if(posIndex.size() == 2)
+				return profits[posIndex.get(0)]+ profits[posIndex.get(1)];
+			
+			//at least three positive transactions. Merge any two if could
+			for(int j=0;j<posIndex.size()-1 && posIndex.size()>3;j++){
+				int curPos = posIndex.get(j);
+				int nextPos = posIndex.get(j+1);
+				int newProfit = profits[curPos];
+				for(int k=curPos+1;k<=nextPos;k++){
+				    newProfit += profits[k];
+				}
+				if(newProfit >= profits[curPos] && newProfit >= profits[nextPos]) {
+					profits[nextPos] = newProfit;
+					profits[curPos] = 0;
+					posIndex.remove(j);
+					j--;
+				}
+			}
+			
+			//after second merge, find the biggest two in the profits. Index in posIndex.
+			if(posIndex.size() == 1) 
+				return profits[posIndex.get(0)];
+			
+			if(posIndex.size() == 2)
+				return profits[posIndex.get(0)]+ profits[posIndex.get(1)];
+				
+			if(posIndex.size() == 3) {
+			    
+			}
+			//get max
+			int maxProfit = 0;
+			int maxIndex = 0;
+			for(int m=0;m<posIndex.size();m++){
+			    int curProfit = profits[posIndex.get(m)];
+			    if(curProfit > maxProfit) {
+			        maxProfit = curProfit;
+			        maxIndex = m;
+			    }
+			}
+			
+			int result = maxProfit;
+			//get second max
+			posIndex.remove(maxIndex);
+			int secondMaxProfit = 0;
+			for(int n=0;n<posIndex.size();n++){
+			    int curProfit = profits[posIndex.get(n)];
+			    if(curProfit > secondMaxProfit) {
+			        secondMaxProfit = curProfit;
+			    }
+			}
+			
+			result+=secondMaxProfit;
+			
+			return result;
+		}
+		
+		//this method is time-consuming, not very good
+		public int maxProfit1(int[] prices) {
+			int maxProfit = 0;
+			if(prices.length <=1 )
+				return maxProfit;
+			
+			if(prices.length == 2) {
+				int profit = prices[1]-prices[0];
+				if(profit > maxProfit)
+					maxProfit = profit;
+				return maxProfit;
+			}
+			
+			//have at least three members
+			for(int midIndex = 0;midIndex<prices.length;midIndex++){
+				int leftPartProfit =  maxProfitRange(0,midIndex,prices);
+				int rightPartProfit = maxProfitRange(midIndex+1,prices.length-1,prices);
+				
+				int curProfit = leftPartProfit + rightPartProfit;
+				if(curProfit > maxProfit)
+					maxProfit = curProfit;
+			}
+			
+			return maxProfit;
+		}
+		
+		//return the max Profit within this range;
+		public int maxProfitRange(int startIndex, int endIndex,int[] prices){
+			int maxProfit = 0;
+			
+			if(endIndex == startIndex) {
+				return maxProfit;
+			}
+				
+			//only two numbers in range
+			if(endIndex-startIndex == 1) {
+				int curProfit = prices[endIndex]-prices[startIndex];
+				if(curProfit > maxProfit)
+					maxProfit = curProfit;
+				return maxProfit;
+			}
+			
+			for(int i=startIndex;i<endIndex;i++){
+				for(int j=i+1;j<=endIndex;j++){
+					int curProfit = prices[j]-prices[i];
+					if(curProfit > maxProfit)
+						maxProfit = curProfit;
+				}
+			}
+			
+			return maxProfit;
+		}
+	
+		/*
+		 * Given a collection of numbers that might contain duplicates, return all
+		 * possible unique permutations.
+		 * 
+		 * For example, [1,1,2] have the following unique permutations: [1,1,2],
+		 * [1,2,1], and [2,1,1].
+		 */
 		public ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
 			ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
 			if(num.length == 0)
 				return result;
 			
-			if(num.length ==1){
-				ArrayList<Integer> onePermute = new ArrayList<Integer>();
-				onePermute.add(new Integer(num[0]));
-				result.add(onePermute);
+			if(num.length == 1) {
+				ArrayList<Integer> onlyList = new ArrayList<Integer>();
+				onlyList.add(new Integer(num[0]));
+				result.add(onlyList);
 				return result;
 			}
 			
 			ArrayList<Integer> visited = new ArrayList<Integer>();
-			
 			for(int i=0;i<num.length;i++){
-				Integer curInt = new Integer(num[i]);
-				if(visited.contains(curInt)){
-					break;
-				} else {
-					visited.add(curInt);
-					ArrayList<Integer> restInts = new ArrayList<Integer>();
-					for(int j=0;j<num.length;j++){
-						if(j!=i)
-							restInts.add(new Integer(num[j]));
+				Integer curNode = new Integer(num[i]);
+				if(!visited.contains(curNode)) {
+					//mark as visited
+					visited.add(curNode);
+					
+					//create rest num's array
+					int[] restNums = new int[num.length-1];
+					for(int j=0,k=0;j<num.length;j++){
+						if(j != i) {
+							restNums[k] = num[j];
+							k++;
+						}
 					}
-					ArrayList<ArrayList<Integer>> restPermute = getPermute(restInts);
+					
+					ArrayList<ArrayList<Integer>> restPermutes =  permuteUnique(restNums);
+					
+					//merge the restPermutes with curNumber to create curNumber's permute
+					for(int m=0;m<restPermutes.size();m++){
+						ArrayList<Integer> curPermute = restPermutes.get(m);
+						ArrayList<Integer> nodeCombined = new ArrayList<Integer>();
+						nodeCombined.add(curNode);
+						for(int n=0;n<curPermute.size();n++){
+							nodeCombined.add(new Integer(curPermute.get(n)));
+						}
+						result.add(nodeCombined);
+					}
 				}
 			}
-	        return result;
-	    }
-		
-		public ArrayList<ArrayList<Integer>> getPermute(ArrayList<Integer> numsToUse) {
-			ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
-			if(numsToUse.size() == 0)
-				return result;
-			
-			if(numsToUse.size() ==1){
-				result.add(numsToUse);
-				return result;
-			}
-			
 			
 			return result;
 		}
@@ -244,6 +405,7 @@ import java.util.ArrayList;
 	    
 	    public static void main(String[] args) {
 	    	Solution obj = new Solution();
-	    	obj.combine(5,3);
+	    	System.out.println("Max profit: "+obj.maxProfit(new int[]{3,1,2,4,0,6,7}));
+	    	//obj.printCombs(obj.permuteUnique(new int[]{1,3,2}));
 	    }
 	}
