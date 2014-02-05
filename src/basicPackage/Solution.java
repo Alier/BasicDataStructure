@@ -54,8 +54,13 @@ import java.util.ArrayList;
 	           
 	           for(int j=0;j<restComb.size();j++){
 	               ArrayList<Integer> curRestComb = restComb.get(j);
-	               curRestComb.add(new Integer(i));
-	               result.add(curRestComb);
+	               ArrayList<Integer> newComb = new ArrayList<Integer>();
+	               //add cur in the first place
+	               newComb.add(new Integer(i));
+	               for(int m=0;m<curRestComb.size();m++){
+	            	   newComb.add(curRestComb.get(m));
+	               }
+	               result.add(newComb);
 	           }
 	        }
 	        
