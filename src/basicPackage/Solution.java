@@ -3,9 +3,88 @@ package basicPackage;
 import java.util.ArrayList;
 
 	public class Solution {
-		public Solution(){
-			super();
+	/*
+	 * Given a collection of numbers that might contain duplicates, return all
+	 * possible unique permutations.
+	 * 
+	 * For example, [1,1,2] have the following unique permutations: [1,1,2],
+	 * [1,2,1], and [2,1,1].
+	 */
+		public ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
+			ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+			if(num.length == 0)
+				return result;
+			
+			if(num.length ==1){
+				ArrayList<Integer> onePermute = new ArrayList<Integer>();
+				onePermute.add(new Integer(num[0]));
+				result.add(onePermute);
+				return result;
+			}
+			
+			ArrayList<Integer> visited = new ArrayList<Integer>();
+			
+			for(int i=0;i<num.length;i++){
+				Integer curInt = new Integer(num[i]);
+				if(visited.contains(curInt)){
+					break;
+				} else {
+					visited.add(curInt);
+					ArrayList<Integer> restInts = new ArrayList<Integer>();
+					for(int j=0;j<num.length;j++){
+						if(j!=i)
+							restInts.add(new Integer(num[j]));
+					}
+					ArrayList<ArrayList<Integer>> restPermute = getPermute(restInts);
+				}
+			}
+	        return result;
+	    }
+		
+		public ArrayList<ArrayList<Integer>> getPermute(ArrayList<Integer> numsToUse) {
+			ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+			if(numsToUse.size() == 0)
+				return result;
+			
+			if(numsToUse.size() ==1){
+				result.add(numsToUse);
+				return result;
+			}
+			
+			
+			return result;
 		}
+		
+		/*Implement pow(x, n).*/
+		public double pow(double x, int n) {
+	        if(n==0) return 1;
+	        
+	        if(n==1) return x;
+	        
+	        if(n == -1) {
+	            if(x != 0){
+	                return 1/x;
+	            } else {
+	                return Integer.MAX_VALUE;
+	            }
+	        }
+	         
+	        //n>=2 || n<=-2;
+	        double square = x*x;
+	        if(n>0) {
+	            int powerForSquare = n/2;
+	            int restPower = n%2;
+	        
+	            return pow(square,powerForSquare)*pow(x,restPower);
+	        } else{
+	            int tmpN = -n;
+	            int powerForSquare = tmpN/2;
+	            int restPower = tmpN%2;
+	            
+	            return 1/(pow(square,powerForSquare)*pow(x,restPower));
+	        }
+	    }
+		
 		/*
 		 * Given two integers n and k, return all possible combinations of k numbers
 		 * out of 1 ... n.
