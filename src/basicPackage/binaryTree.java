@@ -1229,5 +1229,81 @@ public class binaryTree {
 				postOrderFlag, postorder, indexInPostOrder, preorder, indexInPreOrder);
 
 		return;
-	}	
+	}
+
+	/*Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).*/
+	public boolean isSymmetric(treeNode root) {
+        if(root == null)
+            return true;
+        
+        return treesSymmetric(root.leftLeaf,root.rightLeaf);
+    }
+    
+    public boolean treesSymmetric(treeNode leftRoot, treeNode rightRoot){
+        if (leftRoot == null && rightRoot == null)
+            return true;
+        
+        if (leftRoot == null || rightRoot == null)
+            return false;
+            
+        return ( leftRoot.value == rightRoot.value && 
+        treesSymmetric(leftRoot.rightLeaf, rightRoot.leftLeaf) && 
+        treesSymmetric(leftRoot.leftLeaf, rightRoot.rightLeaf));
+    }
+	
+    public boolean isSymmetricIterative(treeNode root) {
+    	if(root == null || (root.leftLeaf == null && root.rightLeaf == null))
+    		return true;
+    	
+    	Stack<treeNode> tmp = new Stack<treeNode>();
+    	ArrayList<treeNode> inorder = new ArrayList<treeNode>();
+    	
+    	//push root into stack;
+    	tmp.push(root);
+    	
+    	treeNode curNode = null;
+    	do {
+    		curNode = tmp.peek();
+    		if(curNode.leftLeaf != null && inorder.contains(curNode.leftLeaf) == false) {
+    			tmp.push(curNode.leftLeaf);
+    		}
+    		else {
+    			curNode = tmp.pop();
+    			inorder.add(curNode);
+    			if(curNode.rightLeaf != null)
+    				tmp.push(curNode.rightLeaf);
+    		}
+    	} while(!tmp.isEmpty());
+    	
+    	//the array should have in-order nodes, check if this array is symmetric; 
+    	int rootIndex = inorder.indexOf(root);
+    	if(rootIndex == 0 || rootIndex == inorder.size()-1) //root is on one side and more than 2 nodes in the tree
+    		return false; 
+    	
+    	for(int i=0,j=inorder.size()-1;i<rootIndex && j> rootIndex;i++,j--){
+    		//System.out.println("data ["+i+"] is "+inorder.get(i).value);
+    		//System.out.println("data ["+j+"] is "+inorder.get(j).value);
+    		if(subTreeSymmetric(inorder.get(i),inorder.get(j)) == false)
+    			return false;
+    	}
+    	
+    	return true;
+    }
+    
+    public boolean subTreeSymmetric(treeNode leftRoot, treeNode rightRoot){
+        if(leftRoot.value != rightRoot.value)
+            return false;
+            
+        if((leftRoot.leftLeaf == null && rightRoot.rightLeaf != null ) ||
+            (leftRoot.leftLeaf !=null && rightRoot.rightLeaf == null ) ||
+            (leftRoot.rightLeaf == null && rightRoot.leftLeaf != null ) ||
+            (leftRoot.rightLeaf !=null && rightRoot.leftLeaf == null))
+            return false;
+            
+        if((leftRoot.leftLeaf != null && leftRoot.leftLeaf.value != rightRoot.rightLeaf.value) || 
+           (leftRoot.rightLeaf != null && leftRoot.rightLeaf.value != rightRoot.leftLeaf.value))
+           return false;
+           
+        return true;
+    }
 }
