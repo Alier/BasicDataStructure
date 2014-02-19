@@ -1,10 +1,72 @@
 package basicPackage;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Solution1 {
-
-	/***** INCOMPLETE !!!! ******/
+	/*Given an absolute path for a file (Unix-style), simplify it.
+	For example,
+	path = "/home/", => "/home"
+	path = "/a/./b/../../c/", => "/c"
+	path = "/home//foo"  => "/home/foo"
+	*/
+	public String simplifyPath(String path) {
+		if(path.length() == 0)
+			return null;
+		
+		String currentDir = new String(".");
+		String parentDir = new String("..");
+		String slash = new String("/");
+		
+		//should view each xxx/ as a directory, use Stack to operate;
+		Stack<String> dirDown = new Stack<String>(); //to push directory's in, the lower directory is on the top
+		
+		int curSlash = 0;
+		int nextSlash = -1;
+		
+		for(int i=1 ;i < path.length(); i++){
+			char c = path.charAt(i);
+			if(c == '/' || i == path.length()-1) {
+				if(nextSlash < 0) {
+					if(c == '/')
+						nextSlash = i;
+					else
+						nextSlash = path.length();
+				}
+				
+				String curPath = path.substring(curSlash+1,nextSlash); // from after last slash to include this current slash
+				System.out.println("Curpath = "+curPath);
+				if(curPath.length() != 0 && curPath.compareTo(currentDir) != 0) { //if nothing between two slashes or cur dir, don't do anything.
+					if(curPath.compareTo(parentDir) == 0){ // parent dir, pop up stack, unless it's root already
+						if(!dirDown.isEmpty())
+							dirDown.pop();
+					} else {
+						dirDown.push(curPath);
+					}
+				}	
+				curSlash = nextSlash;
+				nextSlash = -1;
+			}
+		}
+		
+		if(dirDown.isEmpty()){
+			return slash;
+		}
+		
+		Stack<String> dirUp = new Stack<String>(); // to revert the previous stack so that we can print easily.
+		
+		while(!dirDown.isEmpty())
+			dirUp.push(dirDown.pop());
+		
+		String result  = new String();
+		while(!dirUp.isEmpty()){
+			result = result.concat(slash);
+			result = result.concat(dirUp.pop());
+		}
+	
+		System.out.println("Result="+result);
+		return result;
+    }
 	/*
 	 * The gray code is a binary numeral system where two successive values
 	 * differ in only one bit.
@@ -45,34 +107,60 @@ public class Solution1 {
 		// in digitsArray, so valueArray[0] would be 2 power 0 = 1;
 		int[] digitsArray = new int[n];
 		int[] valueArray = new int[n];
-
+		int[] toDivArray = new int[n];  // starting from 2, exponentially. This is used later for determine whether a digit should be 0 or 1 based on which number it is.
+		
 		for (int i = 0; i < n; i++) {
 			if(i == 0 ){
 				valueArray[i] = 1;
+				toDivArray[i] = 2;
 			} else {
 				valueArray[i] = 2*valueArray[i-1];
+				toDivArray[i] = 2*toDivArray[i-1];
 			}
 		}
 		
 		printIntArray(digitsArray);
 		printIntArray(valueArray);
+		printIntArray(toDivArray);
 		
 		int totalNumbers = (int)Math.pow(2, n);
 		
-		int curResult = 0;
 		for(int i = 0 ;i < totalNumbers; i++){
+			int curResult = 0;
 			//form digitsArray according to i;
 			for(int j =0 ;j < n;j++){
+				int div = i/toDivArray[j]; // see how many times of 2 it is. 
+				int remain = i%toDivArray[j];
+				int half = toDivArray[j]/2;
 				
+				if (!isOddNumber(div)) { // even number, pattern would be 0,...,0,1,...1. Number of 0 would be half the size of toDivArray[i].
+					if(remain < half)
+						digitsArray[j] = 0;
+					else
+						digitsArray[j] = 1;
+				}else { //pattern would be opposite to above
+					if(remain < half)
+						digitsArray[j] = 1;
+					else
+						digitsArray[j] = 0;
+				}
 				curResult += valueArray[j]*digitsArray[j];
 			}
+			//System.out.println("For i="+i);
 			System.out.println("Cur result:"+curResult);
+			//printIntArray(digitsArray);
 			result.add(new Integer(curResult));
 		}
 					
 		return result;
 	}
 
+	public boolean isOddNumber(int num){
+		if(num%2 == 0)
+			return false;
+		else
+			return true;
+	}
 	/*
 	 * Given an array with n objects colored red, white or blue, sort them so
 	 * that objects of the same color are adjacent, with the colors in the order
@@ -449,7 +537,8 @@ public class Solution1 {
 
 	public static void main(String[] args) {
 		Solution1 obj = new Solution1();
-		obj.grayCode(5);
+		System.out.println(obj.simplifyPath(new String("/../ptervsMY/../XHZ/PmReT///././om/.///NID/./nb/../////../OzVU/..///////..///.///Fbz/.///JkBLsBPOtaZfJxBsr/////./PlKqDZibpe///BojpVLSKRxwoNTye/DouOLUweLjfjmSVnNB/gkVRoZplAXmDApDcfz/../../TGuyzi/LxiuqfGMIVgSqwjjKn///nrUL/./UXubqdyqDdjYpPjxcK/../skBTmgzFvPvRRUVJZaj/.///./dXMwqDITFGedfD///./../SJsnjqaejDumfKMgfIwa/./AkIkoLqSFqCluW/YFroCAYXGPBhYeIMWl/ie/FMGzVASoRbbFRj/cI/zbVOaYMkHjNj/LO/cHvxnYfEaWabThaWbu/./../lCzgrdFsIcrgTsTNG///qRHYGgDkc/ZNQXkAPmygMEp/./iD/YjpUiwMrRUI///SSeyNJTkkVUNQaEmeO/./YVhKivJXOMBiaF/tnyodagYEHDRZaHXFF/mKZLDarbdM/../FgaTiMQHaULpidm/../Rs/.././mSovxOdRAsqApStB/././QgTXzkoJ/../BR/jyUfTCJx/MkXYqXcXFUo///../EdLxgz/./GNrHjtXIwSvKGKr/./KdPo/QlpxuwxRk///Z/KX/JKPkjMrhZ/./////.././//////zXDkQvxQHRj/kcVCaMpRRTbrpjqJ///zMPHxrk/././H///LxRIytui///QsPZecj/////../WKyepNvAXv/JKSJoymertVFOQZgy/eyChfvJciPRaqc/kQDMydOjqDCUeiMF/../PSWbWSmPbNjRxMePqP///qLGDZwcNVSnWz/HvXN///WSWg/esoKtXeevuWTrQFEBlX/./zisxX/../EsUvBkbmtXZgRPeBdqA/DFGWEcQUtgsGlMyB/RduYIuxsCHyCnaDywQRq/TDZCpShqrw/.///tmiRNSCoygMYBcY/fKdCfOzMLZnjOcaOJula/.././wW/./JBMLkAuH/Wxi/uVovvcTKWRviPqjhnm/uJk/../glZFVEVPG/SdwxUNmDirhnl/AqJfZ///../sgWRJUqyJG/./nKtZIW/DhopPsvKicLISLoJjYZ/JBnNVrEzRA/./XK/.///KyKqy/.././//kkdrwuvBdXJPBQW/ULhGXIghUqXk")));
+		//obj.grayCode(4);
 		//obj.sortColors1Pass(new int[] { 2, 1, 0 });
 		// obj.sortColors2Pass(new int[] { 0, 1, 2, 0, 1, 0, 1, 2 });
 	}
