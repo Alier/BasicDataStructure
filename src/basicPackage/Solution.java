@@ -1,7 +1,6 @@
 package basicPackage;
 
 import java.util.ArrayList;
-import java.util.Timer;
 
 	public class Solution {
 		
@@ -641,6 +640,5 @@ import java.util.Timer;
 				1826, 7616, 2324, 648, 9252, 5476, 8556, 4445, 6784 };
 	    	//int[] array2 = new int[]{1,2,3,4,5};
 			System.out.println(obj.maxProfit3(array));
-	    	//obj.printCombs(obj.permuteUnique(new int[]{1,3,2}));
 	    }
 	}
