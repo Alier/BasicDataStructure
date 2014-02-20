@@ -1,9 +1,103 @@
 package basicPackage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Stack;
 
 public class Solution1 {
+	public class AandBInLine{ // in straight line, y=ax+b, pair (a,b) is recorded here
+		public double a;
+		public double b;
+		
+		AandBInLine(){
+			a = 0;
+			b = 0;
+		}
+		
+		AandBInLine(double a_val, double b_val) {
+			a =a_val;
+			b=b_val;
+		} 
+	}
+	/*** INCOMPLETE !!!****/
+	/*
+	Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+	*/
+	//hint: three types of straight lines: 1) all points with same x; 2) all points with same y; 3) all points with same x/y if x!=0 && y!=0; 
+	public int maxPoints(Point[] points) {
+		if(points.length == 0)
+			return 0;
+		
+		HashMap<Integer,Integer> sameX = new HashMap<Integer,Integer>();  //x -> points with this x
+		HashMap<Integer,Integer> sameY = new HashMap<Integer,Integer>();  //y -> points with this y
+		HashMap<AandBInLine,Integer> sameSlopeAndDis = new HashMap<AandBInLine, Integer>(); //points with the same (a,b) in y=ax+b;
+		ArrayList<Point> hasDuplicate = new ArrayList<Point>();
+		
+		for(int i=0;i<points.length;i++){
+			Integer xKey = new Integer(points[i].x);
+			Integer yKey = new Integer(points[i].y);
+			if(sameX.containsKey(xKey)){
+				sameX.put(xKey, new Integer(sameX.get(xKey)+1));			
+			} else {
+				sameX.put(xKey, new Integer(1));
+			}
+			
+			if(sameY.containsKey(yKey)){
+				sameY.put(yKey,new Integer(sameY.get(yKey)+1));
+			} else {
+				sameY.put(yKey, new Integer(1));
+			}
+			
+			ArrayList<AandBInLine> visited = new ArrayList<AandBInLine>();
+			//loop over all points handled before this, calculate (a,b) pairs
+			for(int j=0; j<i; j++){				
+				//if same x or same y, already counted in previous steps. Record points that have duplicate.
+				if(points[i].y == points[j].y && points[i].x == points[j].x){
+					hasDuplicate.add(points[i]);
+					break;
+				}
+				
+				//only if different x and y we process
+				if(points[j].y != points[i].y && points[j].x != points[i].x){
+					double a = (double)(points[i].y - points[j].y)/(double)(points[i].x - points[j].x);
+					double b = (double)points[i].y - a*(double)points[i].x;
+					AandBInLine obj = new AandBInLine(a,b);
+					
+					System.out.println("point "+i+"-> point "+j+" slope and dis: "+a+"/"+b);
+					if(sameSlopeAndDis.containsKey(obj)){
+						if(!visited.contains(obj) || hasDuplicate.contains(points[j])) {
+							sameSlopeAndDis.put(obj, new Integer((sameSlopeAndDis.get(obj))+1)); //count+1;
+							visited.add(obj);
+						}
+					}else{
+						sameSlopeAndDis.put(obj, new Integer(2)); // two nodes for this new line
+					}
+				}
+			}
+		}
+		
+		int maxCounts = 0;
+		for(Integer key : sameX.keySet()) {
+			Integer curCount = sameX.get(key);
+			if(curCount.intValue() > maxCounts)
+				maxCounts = curCount.intValue();
+		}
+		
+		for(Integer key : sameY.keySet()) {
+			Integer curCount = sameY.get(key);
+			if(curCount.intValue() > maxCounts)
+				maxCounts = curCount.intValue();
+		}
+		
+		for(AandBInLine key : sameSlopeAndDis.keySet()) {
+			Integer curCount = sameSlopeAndDis.get(key);
+			if(curCount.intValue() > maxCounts)
+				maxCounts = curCount.intValue();
+		}
+		
+		return maxCounts;
+	}
+	
 	/*Given an absolute path for a file (Unix-style), simplify it.
 	For example,
 	path = "/home/", => "/home"
@@ -537,7 +631,9 @@ public class Solution1 {
 
 	public static void main(String[] args) {
 		Solution1 obj = new Solution1();
-		System.out.println(obj.simplifyPath(new String("/../ptervsMY/../XHZ/PmReT///././om/.///NID/./nb/../////../OzVU/..///////..///.///Fbz/.///JkBLsBPOtaZfJxBsr/////./PlKqDZibpe///BojpVLSKRxwoNTye/DouOLUweLjfjmSVnNB/gkVRoZplAXmDApDcfz/../../TGuyzi/LxiuqfGMIVgSqwjjKn///nrUL/./UXubqdyqDdjYpPjxcK/../skBTmgzFvPvRRUVJZaj/.///./dXMwqDITFGedfD///./../SJsnjqaejDumfKMgfIwa/./AkIkoLqSFqCluW/YFroCAYXGPBhYeIMWl/ie/FMGzVASoRbbFRj/cI/zbVOaYMkHjNj/LO/cHvxnYfEaWabThaWbu/./../lCzgrdFsIcrgTsTNG///qRHYGgDkc/ZNQXkAPmygMEp/./iD/YjpUiwMrRUI///SSeyNJTkkVUNQaEmeO/./YVhKivJXOMBiaF/tnyodagYEHDRZaHXFF/mKZLDarbdM/../FgaTiMQHaULpidm/../Rs/.././mSovxOdRAsqApStB/././QgTXzkoJ/../BR/jyUfTCJx/MkXYqXcXFUo///../EdLxgz/./GNrHjtXIwSvKGKr/./KdPo/QlpxuwxRk///Z/KX/JKPkjMrhZ/./////.././//////zXDkQvxQHRj/kcVCaMpRRTbrpjqJ///zMPHxrk/././H///LxRIytui///QsPZecj/////../WKyepNvAXv/JKSJoymertVFOQZgy/eyChfvJciPRaqc/kQDMydOjqDCUeiMF/../PSWbWSmPbNjRxMePqP///qLGDZwcNVSnWz/HvXN///WSWg/esoKtXeevuWTrQFEBlX/./zisxX/../EsUvBkbmtXZgRPeBdqA/DFGWEcQUtgsGlMyB/RduYIuxsCHyCnaDywQRq/TDZCpShqrw/.///tmiRNSCoygMYBcY/fKdCfOzMLZnjOcaOJula/.././wW/./JBMLkAuH/Wxi/uVovvcTKWRviPqjhnm/uJk/../glZFVEVPG/SdwxUNmDirhnl/AqJfZ///../sgWRJUqyJG/./nKtZIW/DhopPsvKicLISLoJjYZ/JBnNVrEzRA/./XK/.///KyKqy/.././//kkdrwuvBdXJPBQW/ULhGXIghUqXk")));
+		Point[] x1 = {new Point(1,1),new Point(1,2),new Point(1,1),new Point(2,4),new Point(3,6), new Point(4,8), new Point(4,5)};
+		System.out.println(obj.maxPoints(x1));
+		//System.out.println(obj.simplifyPath(new String("/../ptervsMY/../XHZ/PmReT///././om/.///NID/./nb/../////../OzVU/..///////..///.///Fbz/.///JkBLsBPOtaZfJxBsr/////./PlKqDZibpe///BojpVLSKRxwoNTye/DouOLUweLjfjmSVnNB/gkVRoZplAXmDApDcfz/../../TGuyzi/LxiuqfGMIVgSqwjjKn///nrUL/./UXubqdyqDdjYpPjxcK/../skBTmgzFvPvRRUVJZaj/.///./dXMwqDITFGedfD///./../SJsnjqaejDumfKMgfIwa/./AkIkoLqSFqCluW/YFroCAYXGPBhYeIMWl/ie/FMGzVASoRbbFRj/cI/zbVOaYMkHjNj/LO/cHvxnYfEaWabThaWbu/./../lCzgrdFsIcrgTsTNG///qRHYGgDkc/ZNQXkAPmygMEp/./iD/YjpUiwMrRUI///SSeyNJTkkVUNQaEmeO/./YVhKivJXOMBiaF/tnyodagYEHDRZaHXFF/mKZLDarbdM/../FgaTiMQHaULpidm/../Rs/.././mSovxOdRAsqApStB/././QgTXzkoJ/../BR/jyUfTCJx/MkXYqXcXFUo///../EdLxgz/./GNrHjtXIwSvKGKr/./KdPo/QlpxuwxRk///Z/KX/JKPkjMrhZ/./////.././//////zXDkQvxQHRj/kcVCaMpRRTbrpjqJ///zMPHxrk/././H///LxRIytui///QsPZecj/////../WKyepNvAXv/JKSJoymertVFOQZgy/eyChfvJciPRaqc/kQDMydOjqDCUeiMF/../PSWbWSmPbNjRxMePqP///qLGDZwcNVSnWz/HvXN///WSWg/esoKtXeevuWTrQFEBlX/./zisxX/../EsUvBkbmtXZgRPeBdqA/DFGWEcQUtgsGlMyB/RduYIuxsCHyCnaDywQRq/TDZCpShqrw/.///tmiRNSCoygMYBcY/fKdCfOzMLZnjOcaOJula/.././wW/./JBMLkAuH/Wxi/uVovvcTKWRviPqjhnm/uJk/../glZFVEVPG/SdwxUNmDirhnl/AqJfZ///../sgWRJUqyJG/./nKtZIW/DhopPsvKicLISLoJjYZ/JBnNVrEzRA/./XK/.///KyKqy/.././//kkdrwuvBdXJPBQW/ULhGXIghUqXk")));
 		//obj.grayCode(4);
 		//obj.sortColors1Pass(new int[] { 2, 1, 0 });
 		// obj.sortColors2Pass(new int[] { 0, 1, 2, 0, 1, 0, 1, 2 });
