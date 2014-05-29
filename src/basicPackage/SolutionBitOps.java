@@ -134,14 +134,106 @@ public class SolutionBitOps {
 	public int getBit(int num, int bitPos){
 		return (num & (1<<bitPos));
 	}
+	
+	/*
+	 * Screen is stored in a single array of bytes. Each byte represent consecutive 8 pixels.
+	 * The width of the screen is W, which is multiple of 8, so each line would be represented by a few bytes in array; 
+	 * 
+	 * Function is to draw a horizontal line from (x1,y) to (x2, y);
+	 */
+	
+	public void drawHorizontalLine(byte[] screen, int width, int x1, int x2, int y){
+		int X1ByteIndex = 0;
+		int X2ByteIndex = 0;
+	
+		int bytesPerLine = width/8;		
+		int startIndexY = y*bytesPerLine;
+	
+		X1ByteIndex = startIndexY + x1/8;
+		X2ByteIndex = startIndexY + x2/8;
+		
+		int x1OffsetInByte = x1%8;
+		int x2OffsetInByte = x2%8;
+		
+		//change anything in the X1Byte from x1OffsetInByte to end of Byte to 1;
+		//same to X2Byte;
+		//screen[X1ByteIndex] = convertBitsToValue(screen[X1ByteIndex], x1OffsetInByte,7,true);
+		screen[X2ByteIndex] = convertBitsToValue(screen[X2ByteIndex], 0, x2OffsetInByte,true);
+		
+		//change every bits in every bytes between X1Byte and X2Byte to 1;
+		for(int i = X1ByteIndex+1;i < X2ByteIndex; i++){
+			screen[i] = convertBitsToValue(screen[i], 0,7,true);
+		}
+		
+		this.printScreen(screen,16);
+	}
+	
+	//Example, for byte 00010000, if startBit = 5, endBit = 2, value = 1, result should be 00111100. 
+	public byte convertBitsToValue(byte org,int startBit, int endBit, boolean value){
+		System.out.println("StartBit="+startBit+"/endBit="+endBit);
+		
+		int mask1 = (255 >> startBit); //for above example, mask 1 = 00000011;
+		System.out.println("mask1="+String.format("%8s", Integer.toBinaryString(mask1)).replace(' ', '0'));
+		int mask2 = (255 >> (endBit+1)); //for above example, mask 2 = 00111111;
+		System.out.println("mask2="+String.format("%8s", Integer.toBinaryString(mask2)).replace(' ', '0'));
+		int mask = (mask1 ^ mask2); // mask = 00111100;
+		System.out.println("mask="+String.format("%8s", Integer.toBinaryString(mask)).replace(' ', '0'));
+		//!!!!! when mask is larger than 127, there is problem with result, bigger than 8 bits!
+		
+		byte fmask = (byte)(mask);
+		System.out.println("fmask="+String.format("%8s", Integer.toBinaryString(fmask & 0xff)).replace(' ', '0'));
+		
+		if(value == true){ //convert from startBit to endBit to 1;
+			return (byte)(org | (fmask & 0xff));
+		}else {
+			return (byte)(org & ~ mask);
+		}
+	}
+	
+	public void printScreen(byte[] screen, int width){
+		int bytesPerLine = width/8;
+		int height = screen.length / bytesPerLine;
+		
+		for(int i = 0; i < height; i++){
+			//print each line;
+			int startByteIndex = i*bytesPerLine;
+			int endByteIndex = startByteIndex + bytesPerLine-1;
+			for(int j = startByteIndex; j<=endByteIndex; j++){
+				//print each byte;
+				String s = String.format("%8s", Integer.toBinaryString(screen[j])).replace(' ', '0');
+				System.out.print(s);
+			}
+			System.out.println();
+		}
+	}
+	
+	public void printByte(byte x){
+		
+	}
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+//		    int i;
+//		    byte y;
+//		    i = 1024;
+//		    for(i=1024;i>0;i--)
+//		    {
+//		    y = (byte)i;
+//		    System.out.print(i + " mod 128 = " + i%128 + " also ");
+//		    System.out.println(i + " cast to byte " + " = " + y);
+//		    }
+
+//		
 		SolutionBitOps objc = new SolutionBitOps();
-		int[] intArray = new int[]{0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16};
 		
-		System.out.println("Result="+objc.findMissingNum(intArray));
+		byte[] test= {0,0,0,0,0,0,0,0};
+		objc.printScreen(test,16);
+		System.out.println("Drawing the line from x1="+5+" to x2="+9+" on row y="+2+":");
+		objc.drawHorizontalLine(test, 16, 5, 9, 2);
+//		int[] intArray = new int[]{0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16};
+//		
+//		System.out.println("Result="+objc.findMissingNum(intArray));
 		
 //		int A = 35;
 //		int B = 14;
